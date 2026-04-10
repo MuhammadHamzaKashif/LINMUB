@@ -2,6 +2,9 @@ import express, { json } from 'express';
 import { connect } from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import authRoutes from './routes/authRoutes.js'
+import userRoutes from './routes/userRoutes.js'
+import thoughtRoutes from './routes/thoughtRoutes.js' 
 
 dotenv.config()
 const app = express();
@@ -12,6 +15,11 @@ app.use(json());
 connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB Connected successfully!'))
   .catch((err) => console.log('MongoDB connection error:', err));
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/thoughts', thoughtRoutes);
 
 app.get('/', (req, res) => {
   res.send('LINMUB API is running...');
