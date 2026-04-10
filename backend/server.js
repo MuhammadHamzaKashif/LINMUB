@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import thoughtRoutes from './routes/thoughtRoutes.js' 
+import chatRoutes from './routes/chatRoutes.js' 
 
 dotenv.config()
 const app = express();
@@ -20,6 +21,7 @@ connect(process.env.MONGO_URI)
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/thoughts', thoughtRoutes);
+app.use('/api/chat', chatRoutes);
 
 app.get('/', (req, res) => {
   res.send('LINMUB API is running...');
