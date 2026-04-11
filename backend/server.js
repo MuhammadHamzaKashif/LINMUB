@@ -6,6 +6,7 @@ import authRoutes from './routes/authRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import thoughtRoutes from './routes/thoughtRoutes.js' 
 import chatRoutes from './routes/chatRoutes.js' 
+import interactionRoutes from './routes/interactionRoutes.js'
 
 dotenv.config()
 const app = express();
@@ -22,6 +23,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/thoughts', thoughtRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/interactions', interactionRoutes);
 
 app.get('/', (req, res) => {
   res.send('LINMUB API is running...');
