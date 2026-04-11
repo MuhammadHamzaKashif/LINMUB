@@ -8,6 +8,11 @@ const userSchema = new Schema({
   age: { type: Number },
   gender: { type: String },
   interests: [{ type: String }],
+  // Stores the AI-generated mathematical representation of interests
+  interestEmbedding: { 
+    type: [Number],
+    default: []
+  },
   socializingCapability: { 
     type: String, 
     enum: ['Listener', 'Takes Time', 'Open Communicator'],
