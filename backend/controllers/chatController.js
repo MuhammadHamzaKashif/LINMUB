@@ -94,3 +94,23 @@ export const getMessages = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+/*
+    Func to get all chats for a user
+    - find convos where user is a participant
+    - populate participants
+    - sort by recently updated
+*/
+export const getUserConversations = async (req, res) => {
+  try {
+    const conversations = await Conversation.find({
+      participants: { $elemMatch: { $eq: req.user._id } }
+    })
+    .populate('participants', 'username socializingCapability')
+    .sort({ updatedAt: -1 });
+
+    res.status(200).json(conversations);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

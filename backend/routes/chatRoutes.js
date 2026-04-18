@@ -1,8 +1,11 @@
 import express from 'express';
 import { protectRoute } from '../middleware/authMiddleware.js';
-import { accessConversation, sendMessage, getMessages } from '../controllers/chatController.js';
+import { accessConversation, sendMessage, getMessages, getUserConversations } from '../controllers/chatController.js';
 
 const router = express.Router();
+
+// GET /api/chat
+router.get('/', protectRoute, getUserConversations);
 
 // POST /api/chat
 router.post('/', protectRoute, accessConversation);

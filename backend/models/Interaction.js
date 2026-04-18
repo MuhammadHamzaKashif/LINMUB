@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const interactionSchema = new mongoose.Schema({
   swiper: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -13,4 +13,4 @@ const interactionSchema = new mongoose.Schema({
 
 interactionSchema.index({ swiper: 1, swipee: 1 }, { unique: true });
 
-module.exports = mongoose.model('Interaction', interactionSchema);
+export default mongoose.model('Interaction', interactionSchema);
