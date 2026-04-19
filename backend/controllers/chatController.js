@@ -1,5 +1,6 @@
 import Conversation from '../models/Conversation.js';
 import Message from '../models/Message.js';
+import Community from '../models/Community.js';
 
 /*
     Func for starting a chat or spinoff if starting chat from a thought
@@ -45,6 +46,38 @@ export const accessConversation = async (req, res) => {
   }
 };
 
+export const accessCommunityChat = async (req, res) => {
+  try {
+    const { communityId } = req.params;
+
+    // Check if user is member
+    const community = await Community.findById(communityId);
+    if (!community) return res.status(404).json({ message: "Community not found" });
+
+    const isMember = community.members.some(m => m.user.toString() === req.user._id.toString());
+    if (!isMember) return res.status(403).json({ message: "Join the community to access its chat" });
+
+    // Find or create group conversation
+    let conversation = await Conversation.findOne({
+      community: communityId,
+      type: 'group'
+    });
+
+    if (!conversation) {
+      conversation = new Conversation({
+        community: communityId,
+        type: 'group',
+        participants: community.members.map(m => m.user)
+      });
+      await conversation.save();
+    }
+
+    res.status(200).json(conversation);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 
 /*
     Func to sned a message
@@ -59,8 +92,45 @@ export const sendMessage = async (req, res) => {
       return res.status(400).json({ message: "Invalid data passed into request" });
     }
 
+    const conversation = await Conversation.findById(conversationId);
+    if (!conversation) return res.status(404).json({ message: "Conversation not found" });
+
+    let senderAlias = null;
+
+    // If it's a community group chat, resolve the alias
+    if (conversation.type === 'group' && conversation.community) {
+      const community = await Community.findById(conversation.community);
+      const memberInfo = community?.members.find(m => m.user.toString() === req.user._id.toString());
+      senderAlias = memberInfo?.temporaryUsername;
+    }
+
+    // Extract mentions efficiently
+    const mentions = [];
+    if (conversation.type === 'group' && conversation.community) {
+      const community = await Community.findById(conversation.community);
+      if (community) {
+        // Sort by length descending to match longest possible alias first
+        const aliases = community.members
+          .map(m => m.temporaryUsername)
+          .filter(Boolean)
+          .sort((a, b) => b.length - a.length);
+
+        if (aliases.length > 0) {
+          const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const pattern = `@(${aliases.map(a => escapeRegExp(a)).join('|')})`;
+          const regex = new RegExp(pattern, 'g');
+          let match;
+          while ((match = regex.exec(content)) !== null) {
+            mentions.push(match[1]);
+          }
+        }
+      }
+    }
+
     const newMessage = new Message({
       sender: req.user._id,
+      senderAlias,
+      mentions,
       content: content,
       conversation: conversationId,
       media: media || []

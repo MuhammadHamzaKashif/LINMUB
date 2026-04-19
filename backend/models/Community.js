@@ -14,6 +14,7 @@ const communitySchema = new Schema(
         user: { type: Schema.Types.ObjectId, ref: "User" },
         temporaryUsername: { type: String, required: true },
         isIdentityRevealed: { type: Boolean, default: false },
+        role: { type: String, enum: ['member', 'admin'], default: 'member' }
       },
     ],
   },

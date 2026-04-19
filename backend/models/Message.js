@@ -3,6 +3,8 @@ import { Schema, model } from 'mongoose';
 const messageSchema = new Schema({
     conversation: { type: Schema.Types.ObjectId, ref: 'Conversation', required: true },
     sender: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    senderAlias: { type: String }, // Used in community group chats
+    mentions: [{ type: String }], // Array of aliases mentioned
     content: { type: String, required: true },
     media: [
         {

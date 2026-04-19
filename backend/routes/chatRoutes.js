@@ -1,6 +1,6 @@
 import express from 'express';
 import { protectRoute } from '../middleware/authMiddleware.js';
-import { accessConversation, sendMessage, getMessages, getUserConversations } from '../controllers/chatController.js';
+import { accessConversation, accessCommunityChat, sendMessage, getMessages, getUserConversations } from '../controllers/chatController.js';
 
 const router = express.Router();
 
@@ -9,6 +9,9 @@ router.get('/', protectRoute, getUserConversations);
 
 // POST /api/chat
 router.post('/', protectRoute, accessConversation);
+
+// GET /api/chat/community/:communityId
+router.get('/community/:communityId', protectRoute, accessCommunityChat);
 
 // POST /api/chat/message
 router.post('/message', protectRoute, sendMessage);

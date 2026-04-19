@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 
-// Pages (to be created)
+// Pages
 import Landing from './pages/auth/Landing';
 import Agora from './pages/home/Agora';
 import SwipeStack from './pages/stack/SwipeStack';
