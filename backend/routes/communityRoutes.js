@@ -6,6 +6,7 @@ import {
   joinCommunity, 
   createEvent, 
   getCommunityEvents,
+  getJoinedCommunitiesEvents,
   getPendingEvents,
   updateEventStatus,
   getCommunityMembers,
@@ -22,6 +23,7 @@ router.get('/:communityId/members', protectRoute, getCommunityMembers);
 router.put('/:communityId/promote/:userIdToPromote', protectRoute, promoteToAdmin);
 
 // Event Routes
+router.get('/joined-events', protectRoute, getJoinedCommunitiesEvents);
 router.get('/:communityId/events', protectRoute, getCommunityEvents);
 router.get('/:communityId/events/pending', protectRoute, getPendingEvents);
 router.post('/:communityId/events', protectRoute, createEvent);

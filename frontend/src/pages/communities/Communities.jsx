@@ -8,25 +8,23 @@ import {
     Calendar,
     Plus,
     ChevronRight,
-    ShieldAlert,
     MapPin,
     Clock,
     Ghost,
     Loader2,
     MessageSquare,
-    Settings,
     Check,
     X,
     Crown,
     Send,
-    Info
+    Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Communities = () => {
     const [communities, setCommunities] = useState([]);
     const [selectedCommunity, setSelectedCommunity] = useState(null);
-    const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'chat', 'admin'
+    const [activeTab, setActiveTab] = useState('overview');
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [joining, setJoining] = useState(false);
@@ -72,8 +70,6 @@ const Communities = () => {
     const renderMessageContent = (content) => {
         if (!content) return null;
         
-        // Build a regex that matches any of the known aliases in this community
-        // We sort by length descending to match longer aliases first (e.g., "@Hamza Kashif" before "@Hamza")
         const aliases = communityMembers
             .map(m => m.temporaryUsername)
             .filter(Boolean)
@@ -91,7 +87,7 @@ const Communities = () => {
                 return (
                     <span 
                         key={i} 
-                        className="px-1.5 py-0.5 rounded bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-bold"
+                        className="px-2 py-0.5 rounded-lg bg-primary-600/20 text-primary-300 font-bold border border-primary-500/20 shadow-[0_0_10px_rgba(99,102,241,0.1)]"
                     >
                         @{part}
                     </span>
@@ -169,7 +165,6 @@ const Communities = () => {
         setActiveTab(tab);
         if (tab === 'chat') {
             fetchGroupChat(selectedCommunity._id);
-            // Fetch members even for non-admins to support mentions
             try {
                 const memberResp = await api.get(`/communities/${selectedCommunity._id}/members`);
                 setCommunityMembers(memberResp.data);
@@ -190,7 +185,6 @@ const Communities = () => {
             setShowJoinModal(false);
             setTempUsername('');
             fetchCommunities();
-            const updated = communities.find(c => c._id === selectedCommunity._id);
             setSelectedCommunity({ ...selectedCommunity, userRole: 'member', myAlias: tempUsername });
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to join community');
@@ -203,8 +197,6 @@ const Communities = () => {
         const val = e.target.value;
         setNewMessage(val);
  
-        // Logic for mentions
-        const lastChar = val[e.target.selectionStart - 1];
         const cursorPosition = e.target.selectionStart;
         const textBeforeCursor = val.slice(0, cursorPosition);
         const lastWordMatch = textBeforeCursor.match(/@(\w*)$/);
@@ -327,26 +319,30 @@ const Communities = () => {
             <div className="space-y-8">
                 <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <div>
-                        <h1 className="text-3xl font-outfit font-bold text-slate-900 dark:text-white">Communities</h1>
-                        <p className="text-slate-500 mt-1">Safe spaces for collective solitude</p>
+                        <h1 className="text-3xl font-outfit font-bold text-white">
+                            {selectedCommunity ? selectedCommunity.name : <><span className="gradient-text">Sanctuaries</span></>}
+                        </h1>
+                        <p className="text-slate-500 mt-1 text-sm">
+                            {selectedCommunity ? selectedCommunity.description?.slice(0, 60) : 'Safe spaces for collective solitude'}
+                        </p>
                     </div>
                     <div className="flex items-center gap-3">
                         {!selectedCommunity && (
                             <button
                                 onClick={() => setShowCreateModal(true)}
-                                className="btn-primary flex items-center gap-2 px-4 py-2"
+                                className="btn-primary flex items-center gap-2 px-5 py-2.5"
                             >
-                                <Plus className="w-5 h-5" />
-                                <span>Create Community</span>
+                                <Plus className="w-4 h-4" />
+                                <span className="text-sm">Create Sanctuary</span>
                             </button>
                         )}
                         {selectedCommunity && (
                             <button
                                 onClick={() => setSelectedCommunity(null)}
-                                className="text-sm text-primary-600 font-bold flex items-center gap-1 hover:underline"
+                                className="text-sm text-primary-400 font-bold flex items-center gap-1 hover:text-primary-300 transition-colors"
                             >
                                 <ChevronRight className="w-4 h-4 rotate-180" />
-                                Back to all communities
+                                Back to all
                             </button>
                         )}
                     </div>
@@ -359,36 +355,45 @@ const Communities = () => {
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: 20 }}
-                            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                            className="grid grid-cols-1 md:grid-cols-2 gap-5"
                         >
                             {loading ? (
                                 [...Array(4)].map((_, i) => (
-                                    <div key={i} className="glass-card p-6 h-48 animate-pulse bg-slate-100 dark:bg-slate-800" />
+                                    <div key={i} className="glass-card p-6 h-48 animate-pulse">
+                                        <div className="h-10 w-10 rounded-2xl bg-white/[0.06] mb-4"></div>
+                                        <div className="h-5 bg-white/[0.06] rounded-full w-2/3 mb-3"></div>
+                                        <div className="h-3 bg-white/[0.04] rounded-full w-full mb-2"></div>
+                                        <div className="h-3 bg-white/[0.04] rounded-full w-3/4"></div>
+                                    </div>
                                 ))
                             ) : (
                                 communities.map((community) => (
                                     <div
                                         key={community._id}
                                         onClick={() => handleCommunitySelect(community)}
-                                        className="glass-card p-6 cursor-pointer group hover:border-primary-300 dark:hover:border-primary-800 transition-all"
+                                        className="glass-card-hover p-6 cursor-pointer group relative overflow-hidden"
                                     >
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div className="p-3 bg-primary-50 dark:bg-primary-900/20 rounded-2xl text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform">
-                                                <Users className="w-6 h-6" />
+                                        <div className="absolute -top-16 -right-16 w-40 h-40 bg-primary-500/[0.06] rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                                        
+                                        <div className="relative z-10">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <div className="p-3 bg-primary-500/10 rounded-2xl text-primary-400 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(99,102,241,0.2)] transition-all">
+                                                    <Users className="w-5 h-5" />
+                                                </div>
+                                                <div className="flex flex-col items-end gap-1">
+                                                    <span className="text-[9px] font-bold px-2.5 py-1 bg-white/[0.06] text-slate-400 rounded-full uppercase tracking-[0.15em] border border-white/[0.06]">
+                                                        {community.membersCount || 0} Members
+                                                    </span>
+                                                    {community.userRole && (
+                                                        <span className="text-[9px] font-bold text-primary-400 uppercase tracking-wider">{community.userRole}</span>
+                                                    )}
+                                                </div>
                                             </div>
-                                            <div className="flex flex-col items-end">
-                                                <span className="text-[10px] font-bold px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-full uppercase tracking-widest">
-                                                    {community.membersCount || 0} Members
-                                                </span>
-                                                {community.userRole && (
-                                                    <span className="text-[9px] mt-1 font-bold text-primary-500 uppercase">{community.userRole}</span>
-                                                )}
-                                            </div>
+                                            <h3 className="text-lg font-bold mb-2 text-white group-hover:text-primary-300 transition-colors">{community.name}</h3>
+                                            <p className="text-slate-500 line-clamp-2 text-sm italic">
+                                                {community.description || 'A community where silence is golden and presence is enough.'}
+                                            </p>
                                         </div>
-                                        <h3 className="text-xl font-bold mb-2 group-hover:text-primary-600 transition-colors">{community.name}</h3>
-                                        <p className="text-slate-500 dark:text-slate-400 line-clamp-2 text-sm italic">
-                                            {community.description || 'A community where silence is golden and presence is enough.'}
-                                        </p>
                                     </div>
                                 ))
                             )}
@@ -401,22 +406,25 @@ const Communities = () => {
                             exit={{ opacity: 0, x: -20 }}
                             className="space-y-6"
                         >
-                            <div className="glass-card p-8 border-primary-100 dark:border-primary-900 overflow-hidden relative">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary-400/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+                            {/* Community Header */}
+                            <div className="glass-card p-8 overflow-hidden relative">
+                                <div className="absolute inset-0 bg-gradient-to-r from-primary-600/10 via-transparent to-purple-600/5 pointer-events-none"></div>
+                                <div className="absolute top-0 right-0 w-48 h-48 bg-primary-500/[0.08] rounded-full -mr-20 -mt-20 blur-3xl pointer-events-none"></div>
+                                
                                 <div className="relative z-10 flex flex-col md:flex-row justify-between gap-6">
                                     <div className="max-w-xl">
-                                        <h2 className="text-4xl font-outfit font-bold mb-4">{selectedCommunity.name}</h2>
-                                        <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                                        <h2 className="text-3xl font-outfit font-bold text-white mb-3">{selectedCommunity.name}</h2>
+                                        <p className="text-slate-400 leading-relaxed mb-5 text-sm">
                                             {selectedCommunity.description}
                                         </p>
-                                        <div className="flex flex-wrap gap-4">
-                                            <div className="flex items-center gap-2 text-sm text-slate-500 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-full">
-                                                <Users className="w-4 h-4" />
+                                        <div className="flex flex-wrap gap-3">
+                                            <div className="flex items-center gap-2 text-xs text-slate-400 bg-white/[0.04] px-3 py-1.5 rounded-full border border-white/[0.06]">
+                                                <Users className="w-3.5 h-3.5 text-primary-400" />
                                                 <span>{selectedCommunity.niche || 'General'}</span>
                                             </div>
                                             {selectedCommunity.userRole && (
-                                                <div className="flex items-center gap-2 text-sm text-primary-600 bg-primary-50 dark:bg-primary-900/20 px-3 py-1.5 rounded-full font-bold">
-                                                    <Crown className="w-4 h-4" />
+                                                <div className="flex items-center gap-2 text-xs text-primary-300 bg-primary-500/10 px-3 py-1.5 rounded-full font-bold border border-primary-500/20">
+                                                    <Crown className="w-3.5 h-3.5" />
                                                     <span className="capitalize">{selectedCommunity.userRole}</span>
                                                 </div>
                                             )}
@@ -426,15 +434,15 @@ const Communities = () => {
                                         {!selectedCommunity.userRole ? (
                                             <button
                                                 onClick={() => setShowJoinModal(true)}
-                                                className="btn-primary px-8 py-3 text-lg flex items-center gap-2"
+                                                className="btn-primary px-8 py-3 text-base flex items-center gap-2"
                                             >
                                                 <Ghost className="w-5 h-5" />
                                                 Join with Alias
                                             </button>
                                         ) : (
                                             <div className="text-right">
-                                                <p className="text-xs text-slate-400 uppercase tracking-widest font-bold mb-1">Your Alias</p>
-                                                <p className="text-xl font-outfit font-bold text-primary-600 dark:text-primary-400">@{selectedCommunity.myAlias}</p>
+                                                <p className="text-[10px] text-slate-500 uppercase tracking-[0.2em] font-black mb-1">Your Alias</p>
+                                                <p className="text-2xl font-outfit font-black gradient-text drop-shadow-[0_0_10px_rgba(99,102,241,0.3)]">@{selectedCommunity.myAlias}</p>
                                             </div>
                                         )}
                                     </div>
@@ -442,17 +450,17 @@ const Communities = () => {
                             </div>
 
                             {/* Tabs */}
-                            <div className="flex items-center gap-1 border-b border-slate-200 dark:border-slate-800">
+                            <div className="flex items-center gap-1 border-b border-white/[0.06]">
                                 <button
                                     onClick={() => handleTabChange('overview')}
-                                    className={`px-6 py-3 text-sm font-bold transition-all border-b-2 ${activeTab === 'overview' ? 'border-primary-500 text-primary-600' : 'border-transparent text-slate-500'}`}
+                                    className={`px-6 py-3 text-sm font-bold transition-all border-b-2 ${activeTab === 'overview' ? 'border-primary-500 text-primary-400' : 'border-transparent text-slate-500 hover:text-slate-300'}`}
                                 >
                                     Overview
                                 </button>
                                 {selectedCommunity.userRole && (
                                     <button
                                         onClick={() => handleTabChange('chat')}
-                                        className={`px-6 py-3 text-sm font-bold transition-all border-b-2 ${activeTab === 'chat' ? 'border-primary-500 text-primary-600' : 'border-transparent text-slate-500'}`}
+                                        className={`px-6 py-3 text-sm font-bold transition-all border-b-2 ${activeTab === 'chat' ? 'border-primary-500 text-primary-400' : 'border-transparent text-slate-500 hover:text-slate-300'}`}
                                     >
                                         Group Chat
                                     </button>
@@ -460,7 +468,7 @@ const Communities = () => {
                                 {selectedCommunity.userRole === 'admin' && (
                                     <button
                                         onClick={() => handleTabChange('admin')}
-                                        className={`px-6 py-3 text-sm font-bold transition-all border-b-2 ${activeTab === 'admin' ? 'border-primary-500 text-primary-600' : 'border-transparent text-slate-500'}`}
+                                        className={`px-6 py-3 text-sm font-bold transition-all border-b-2 ${activeTab === 'admin' ? 'border-primary-500 text-primary-400' : 'border-transparent text-slate-500 hover:text-slate-300'}`}
                                     >
                                         Management
                                     </button>
@@ -470,17 +478,17 @@ const Communities = () => {
                             {/* Tab Content */}
                             <div className="min-h-[400px]">
                                 {activeTab === 'overview' && (
-                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8 py-4">
+                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8 py-2">
                                         <section>
                                             <div className="flex items-center justify-between mb-6">
-                                                <h3 className="text-xl font-bold flex items-center gap-2">
-                                                    <Calendar className="w-5 h-5 text-primary-500" />
+                                                <h3 className="text-lg font-bold flex items-center gap-2 text-white">
+                                                    <Calendar className="w-5 h-5 text-primary-400 drop-shadow-[0_0_6px_rgba(99,102,241,0.5)]" />
                                                     Upcoming Events
                                                 </h3>
                                                 {selectedCommunity.userRole && (
                                                     <button
                                                         onClick={() => setShowSuggestModal(true)}
-                                                        className="btn-secondary text-xs flex items-center gap-1"
+                                                        className="btn-secondary text-xs flex items-center gap-1.5 px-3 py-1.5"
                                                     >
                                                         <Plus className="w-3 h-3" />
                                                         Suggest Event
@@ -491,31 +499,32 @@ const Communities = () => {
                                             <div className="space-y-4">
                                                 {events.length > 0 ? (
                                                     events.map((event) => (
-                                                        <div key={event._id} className="glass-card p-6 flex flex-col md:flex-row justify-between gap-6 hover:shadow-md transition-shadow">
+                                                        <div key={event._id} className="glass-card-hover p-6 flex flex-col md:flex-row justify-between gap-6">
                                                             <div className="space-y-3">
-                                                                <h4 className="text-lg font-bold">{event.title}</h4>
+                                                                <h4 className="text-base font-bold text-white">{event.title}</h4>
                                                                 <p className="text-slate-500 text-sm italic">{event.description}</p>
-                                                                <div className="flex flex-wrap gap-4 text-xs font-medium text-slate-400 uppercase tracking-wider">
+                                                                <div className="flex flex-wrap gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                                                                     <div className="flex items-center gap-1.5">
-                                                                        <MapPin className="w-3.5 h-3.5 text-primary-400" />
+                                                                        <MapPin className="w-3 h-3 text-primary-400" />
                                                                         {event.locationOrLink}
                                                                     </div>
                                                                     <div className="flex items-center gap-1.5">
-                                                                        <Clock className="w-3.5 h-3.5 text-primary-400" />
+                                                                        <Clock className="w-3 h-3 text-primary-400" />
                                                                         {new Date(event.scheduledDate).toLocaleDateString()} {event.time && `at ${event.time}`}
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div className="flex items-center">
-                                                                <button className="w-full md:w-auto px-6 py-2 rounded-xl border border-primary-200 dark:border-primary-800 text-primary-600 dark:text-primary-400 font-bold text-sm hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors">
+                                                                <button className="w-full md:w-auto px-6 py-2 rounded-xl border border-primary-500/20 text-primary-400 font-bold text-sm hover:bg-primary-500/10 hover:border-primary-500/30 transition-all">
                                                                     RSVP Silently
                                                                 </button>
                                                             </div>
                                                         </div>
                                                     ))
                                                 ) : (
-                                                    <div className="glass-card p-12 text-center border-dashed border-2">
-                                                        <p className="text-slate-400">No scheduled events in this community. Yet.</p>
+                                                    <div className="glass-card p-12 text-center border-dashed border-white/10">
+                                                        <Sparkles className="w-8 h-8 text-slate-700 mx-auto mb-3" />
+                                                        <p className="text-slate-500 text-sm">No scheduled events in this community. Yet.</p>
                                                     </div>
                                                 )}
                                             </div>
@@ -531,29 +540,32 @@ const Communities = () => {
                                             </div>
                                         ) : (
                                             <>
-                                                <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                                                <div className="flex-1 overflow-y-auto p-4 space-y-4">
                                                     {messages.length === 0 ? (
-                                                        <div className="flex flex-col items-center justify-center h-full text-slate-400 space-y-2">
+                                                        <div className="flex flex-col items-center justify-center h-full text-slate-500 space-y-2">
                                                             <MessageSquare className="w-12 h-12 opacity-20" />
-                                                            <p>Start a quiet conversation...</p>
+                                                            <p className="text-sm">Start a quiet conversation...</p>
                                                         </div>
                                                     ) : (
                                                         messages.map((msg) => (
                                                             <div key={msg._id} className={`flex flex-col ${msg.sender?._id === user._id ? 'items-end' : 'items-start'}`}>
                                                                 <div className="flex items-center gap-2 mb-1">
-                                                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{msg.senderAlias}</span>
+                                                                    <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{msg.senderAlias}</span>
                                                                 </div>
-                                                                <div className={`max-w-[80%] p-3 rounded-2xl ${msg.sender?._id === user._id ? 'bg-primary-600 text-white rounded-tr-none' : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-tl-none'}`}>
+                                                                <div className={`max-w-[80%] p-3 rounded-2xl ${msg.sender?._id === user._id
+                                                                    ? 'bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-tr-sm shadow-lg shadow-primary-900/30'
+                                                                    : 'bg-white/[0.06] border border-white/[0.08] text-slate-200 rounded-tl-sm'
+                                                                }`}>
                                                                     <p className="text-sm leading-relaxed whitespace-pre-wrap">{renderMessageContent(msg.content)}</p>
                                                                 </div>
-                                                                <span className="text-[9px] mt-1 text-slate-400">{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                                <span className="text-[9px] mt-1 text-slate-600">{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                                             </div>
                                                         ))
                                                     )}
                                                     <div ref={chatEndRef} />
                                                 </div>
                                                 
-                                                <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 relative">
+                                                <div className="p-4 border-t border-white/[0.06] bg-white/[0.02] relative">
                                                     {/* Mentions Overlay */}
                                                     <AnimatePresence>
                                                         {showMentions && (
@@ -563,8 +575,8 @@ const Communities = () => {
                                                                 exit={{ opacity: 0, y: 10 }}
                                                                 className="absolute bottom-full left-4 mb-2 w-64 glass-card shadow-2xl overflow-hidden z-20 border-primary-500/20"
                                                             >
-                                                                <div className="p-2 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
-                                                                    <p className="text-[10px] font-bold uppercase text-slate-400">Mention Community Member</p>
+                                                                <div className="p-2 bg-white/[0.04] border-b border-white/[0.06]">
+                                                                    <p className="text-[9px] font-bold uppercase text-slate-500 tracking-wider">Mention Member</p>
                                                                 </div>
                                                                 <div className="max-h-48 overflow-y-auto">
                                                                     {communityMembers
@@ -573,13 +585,17 @@ const Communities = () => {
                                                                             <button
                                                                                 key={m.temporaryUsername}
                                                                                 onClick={() => handleSelectMention(m.temporaryUsername)}
-                                                                                className={`w-full text-left p-3 text-sm flex items-center gap-3 transition-colors ${mentionIndex === idx ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600' : 'hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'}`}
+                                                                                className={`w-full text-left p-3 text-sm flex items-center gap-3 transition-colors ${
+                                                                                    mentionIndex === idx 
+                                                                                        ? 'bg-primary-500/15 text-primary-300' 
+                                                                                        : 'hover:bg-white/[0.04] text-slate-400'
+                                                                                }`}
                                                                             >
-                                                                                <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+                                                                                <div className="w-6 h-6 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
                                                                                     <Ghost className="w-3.5 h-3.5" />
                                                                                 </div>
                                                                                 <span className="font-bold">@{m.temporaryUsername}</span>
-                                                                                {m.role === 'admin' && <Crown className="w-3 h-3 text-amber-500" />}
+                                                                                {m.role === 'admin' && <Crown className="w-3 h-3 text-amber-400" />}
                                                                             </button>
                                                                         ))}
                                                                 </div>
@@ -590,13 +606,13 @@ const Communities = () => {
                                                     <form onSubmit={handleSendMessage} className="flex gap-2">
                                                         <input
                                                             type="text"
-                                                            className="flex-1 bg-white dark:bg-slate-800 border-none focus:ring-2 focus:ring-primary-500 rounded-xl px-4 py-2"
+                                                            className="flex-1 input-field py-2.5"
                                                             placeholder={`Message as @${selectedCommunity.myAlias}... (use @ to tag)`}
                                                             value={newMessage}
                                                             onChange={handleNewMessageChange}
                                                             onKeyDown={handleKeyDown}
                                                         />
-                                                        <button type="submit" className="p-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-colors flex items-center justify-center">
+                                                        <button type="submit" className="p-2.5 bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-xl hover:from-primary-500 hover:to-primary-400 transition-all shadow-lg shadow-primary-900/30">
                                                             <Send className="w-5 h-5" />
                                                         </button>
                                                     </form>
@@ -607,39 +623,39 @@ const Communities = () => {
                                 )}
 
                                 {activeTab === 'admin' && (
-                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8 py-4">
+                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8 py-2">
                                         <section>
-                                            <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                                                <Clock className="w-5 h-5 text-amber-500" />
+                                            <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-white">
+                                                <Clock className="w-5 h-5 text-amber-400 drop-shadow-[0_0_6px_rgba(245,158,11,0.5)]" />
                                                 Pending Approvals
                                             </h3>
                                             <div className="space-y-3">
                                                 {adminLoading ? (
-                                                    <div className="h-20 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
+                                                    <div className="h-20 animate-pulse glass-card"></div>
                                                 ) : pendingEvents.length === 0 ? (
-                                                    <div className="p-6 text-center text-slate-400 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-dashed text-sm italic">
+                                                    <div className="p-6 text-center text-slate-500 glass-card border-dashed border-white/10 text-sm italic">
                                                         No events awaiting approval.
                                                     </div>
                                                 ) : (
                                                     pendingEvents.map(event => (
-                                                        <div key={event._id} className="glass-card p-4 flex items-center justify-between gap-4 border-amber-100 dark:border-amber-900/30">
+                                                        <div key={event._id} className="glass-card p-4 flex items-center justify-between gap-4 border-amber-500/10">
                                                             <div>
-                                                                <h4 className="font-bold">{event.title}</h4>
-                                                                <p className="text-[10px] text-slate-400 uppercase font-medium">
+                                                                <h4 className="font-bold text-white text-sm">{event.title}</h4>
+                                                                <p className="text-[10px] text-slate-500 uppercase font-medium tracking-wider">
                                                                   {new Date(event.scheduledDate).toLocaleDateString()} {event.time && `at ${event.time}`}
                                                                 </p>
-                                                                <p className="text-xs text-slate-500 italic">Suggested by {event.organizerAlias}</p>
+                                                                <p className="text-xs text-slate-500 italic mt-0.5">Suggested by <span className="text-primary-400 font-semibold">{event.organizerAlias}</span></p>
                                                             </div>
                                                             <div className="flex gap-2">
                                                                 <button
                                                                     onClick={() => handleUpdateEventStatus(event._id, 'approved')}
-                                                                    className="p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 transition-colors"
+                                                                    className="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg hover:bg-emerald-500/20 transition-colors border border-emerald-500/20"
                                                                 >
                                                                     <Check className="w-4 h-4" />
                                                                 </button>
                                                                 <button
                                                                     onClick={() => handleUpdateEventStatus(event._id, 'rejected')}
-                                                                    className="p-2 bg-rose-50 text-rose-600 rounded-lg hover:bg-rose-100 transition-colors"
+                                                                    className="p-2 bg-rose-500/10 text-rose-400 rounded-lg hover:bg-rose-500/20 transition-colors border border-rose-500/20"
                                                                 >
                                                                     <X className="w-4 h-4" />
                                                                 </button>
@@ -651,26 +667,26 @@ const Communities = () => {
                                         </section>
 
                                         <section>
-                                            <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                                                <Users className="w-5 h-5 text-primary-500" />
-                                                Manage Sanctuary Members
+                                            <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-white">
+                                                <Users className="w-5 h-5 text-primary-400 drop-shadow-[0_0_6px_rgba(99,102,241,0.5)]" />
+                                                Manage Members
                                             </h3>
-                                            <div className="glass-card divide-y dark:divide-slate-800 overflow-hidden">
+                                            <div className="glass-card divide-y divide-white/[0.06] overflow-hidden">
                                                 {communityMembers.map(member => (
-                                                    <div key={member.user?._id} className="p-4 flex items-center justify-between">
+                                                    <div key={member.user?._id} className="p-4 flex items-center justify-between hover:bg-white/[0.02] transition-colors">
                                                         <div className="flex items-center gap-3">
-                                                            <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
-                                                                {member.role === 'admin' ? <Crown className="w-5 h-5 text-amber-500" /> : <Ghost className="w-5 h-5" />}
+                                                            <div className="w-10 h-10 rounded-full bg-white/[0.05] border border-white/[0.08] flex items-center justify-center">
+                                                                {member.role === 'admin' ? <Crown className="w-5 h-5 text-amber-400" /> : <Ghost className="w-5 h-5 text-slate-500" />}
                                                             </div>
                                                             <div>
-                                                                <p className="font-bold text-sm">@{member.temporaryUsername}</p>
-                                                                <p className="text-[10px] text-slate-400 uppercase tracking-widest">{member.role}</p>
+                                                                <p className="font-bold text-sm text-slate-200">@{member.temporaryUsername}</p>
+                                                                <p className="text-[9px] text-slate-500 uppercase tracking-[0.15em]">{member.role}</p>
                                                             </div>
                                                         </div>
                                                         {member.role !== 'admin' && (
                                                             <button
                                                                 onClick={() => handlePromote(member.user._id)}
-                                                                className="text-[10px] font-bold text-primary-600 uppercase hover:underline"
+                                                                className="text-[10px] font-bold text-primary-400 uppercase hover:text-primary-300 transition-colors tracking-wider"
                                                             >
                                                                 Promote
                                                             </button>
@@ -689,7 +705,7 @@ const Communities = () => {
                 {/* Create Community Modal */}
                 <AnimatePresence>
                     {showCreateModal && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
                             <motion.div
                                 initial={{ opacity: 0, y: 50, scale: 0.95 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -698,39 +714,37 @@ const Communities = () => {
                             >
                                 <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-                                <h3 className="text-3xl font-outfit font-bold mb-2">Create a New Room</h3>
+                                <h3 className="text-2xl font-outfit font-bold mb-2 text-white">Create a <span className="gradient-text">New Sanctuary</span></h3>
                                 <p className="text-slate-500 text-sm mb-8 italic">Seed a new space where introverts can coexist in quiet harmony.</p>
 
-                                <form onSubmit={handleCreateCommunity} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-4 md:col-span-2">
-                                        <div>
-                                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Community Name</label>
-                                            <input
-                                                type="text"
-                                                className="input-field py-3"
-                                                placeholder="e.g. Midnight Library"
-                                                value={createForm.name}
-                                                onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
-                                                required
-                                            />
-                                        </div>
+                                <form onSubmit={handleCreateCommunity} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div className="md:col-span-2">
+                                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Community Name</label>
+                                        <input
+                                            type="text"
+                                            className="input-field py-3"
+                                            placeholder="e.g. Midnight Library"
+                                            value={createForm.name}
+                                            onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
+                                            required
+                                        />
                                     </div>
                                     <div>
                                         <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Niche/Category</label>
-                                        <input type="text" className="input-field" placeholder="e.g. Readers" value={createForm.niche} onChange={(e) => setCreateForm({ ...createForm, niche: e.target.value })} required />
+                                        <input type="text" className="input-field py-3" placeholder="e.g. Readers" value={createForm.niche} onChange={(e) => setCreateForm({ ...createForm, niche: e.target.value })} required />
                                     </div>
                                     <div>
                                         <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Your Founder Alias</label>
-                                        <input type="text" className="input-field" placeholder="Your name in this room" value={createForm.temporaryUsername} onChange={(e) => setCreateForm({ ...createForm, temporaryUsername: e.target.value })} required />
+                                        <input type="text" className="input-field py-3" placeholder="Your name in this room" value={createForm.temporaryUsername} onChange={(e) => setCreateForm({ ...createForm, temporaryUsername: e.target.value })} required />
                                     </div>
                                     <div className="md:col-span-2">
                                         <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Description</label>
                                         <textarea className="input-field min-h-[100px] py-3" placeholder="What is this space for?" value={createForm.description} onChange={(e) => setCreateForm({ ...createForm, description: e.target.value })} required />
                                     </div>
-                                    <div className="md:col-span-2 flex items-center gap-4 mt-4">
+                                    <div className="md:col-span-2 flex items-center gap-4 mt-2">
                                         <button type="button" onClick={() => setShowCreateModal(false)} className="flex-1 btn-secondary py-3">Cancel</button>
-                                        <button type="submit" disabled={creating} className="flex-[2] btn-primary py-3 flex items-center justify-center gap-3 text-lg">
-                                            {creating ? <Loader2 className="w-6 h-6 animate-spin" /> : <><Plus className="w-5 h-5" /><span>Establish Sanctuary</span></>}
+                                        <button type="submit" disabled={creating} className="flex-[2] btn-primary py-3 flex items-center justify-center gap-3 text-base">
+                                            {creating ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Plus className="w-5 h-5" /><span>Establish Sanctuary</span></>}
                                         </button>
                                     </div>
                                 </form>
@@ -742,33 +756,33 @@ const Communities = () => {
                 {/* Suggest Event Modal */}
                 <AnimatePresence>
                     {showSuggestModal && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
                             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="glass-card w-full max-w-md p-8">
-                                <h3 className="text-2xl font-outfit font-bold mb-4">Suggest an Event</h3>
+                                <h3 className="text-xl font-outfit font-bold mb-5 text-white">Suggest an Event</h3>
                                 <form onSubmit={handleSuggestEvent} className="space-y-4">
                                     <div>
-                                        <label className="block text-xs font-bold uppercase text-slate-400 mb-1">Title</label>
-                                        <input type="text" className="input-field" placeholder="Event name" value={suggestForm.title} onChange={(e) => setSuggestForm({ ...suggestForm, title: e.target.value })} required />
+                                        <label className="block text-xs font-bold uppercase text-slate-400 mb-1.5 tracking-wider">Title</label>
+                                        <input type="text" className="input-field py-2.5" placeholder="Event name" value={suggestForm.title} onChange={(e) => setSuggestForm({ ...suggestForm, title: e.target.value })} required />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-bold uppercase text-slate-400 mb-1">Date</label>
-                                        <input type="date" className="input-field" value={suggestForm.scheduledDate} onChange={(e) => setSuggestForm({ ...suggestForm, scheduledDate: e.target.value })} required />
+                                        <label className="block text-xs font-bold uppercase text-slate-400 mb-1.5 tracking-wider">Date</label>
+                                        <input type="date" className="input-field py-2.5" value={suggestForm.scheduledDate} onChange={(e) => setSuggestForm({ ...suggestForm, scheduledDate: e.target.value })} required />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-bold uppercase text-slate-400 mb-1">Time</label>
-                                        <input type="time" className="input-field" value={suggestForm.time} onChange={(e) => setSuggestForm({ ...suggestForm, time: e.target.value })} required />
+                                        <label className="block text-xs font-bold uppercase text-slate-400 mb-1.5 tracking-wider">Time</label>
+                                        <input type="time" className="input-field py-2.5" value={suggestForm.time} onChange={(e) => setSuggestForm({ ...suggestForm, time: e.target.value })} required />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-bold uppercase text-slate-400 mb-1">Location or Link</label>
-                                        <input type="text" className="input-field" placeholder="Where is it?" value={suggestForm.locationOrLink} onChange={(e) => setSuggestForm({ ...suggestForm, locationOrLink: e.target.value })} required />
+                                        <label className="block text-xs font-bold uppercase text-slate-400 mb-1.5 tracking-wider">Location or Link</label>
+                                        <input type="text" className="input-field py-2.5" placeholder="Where is it?" value={suggestForm.locationOrLink} onChange={(e) => setSuggestForm({ ...suggestForm, locationOrLink: e.target.value })} required />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-bold uppercase text-slate-400 mb-1">Description</label>
-                                        <textarea className="input-field py-2" rows="3" placeholder="Briefly describe the activity" value={suggestForm.description} onChange={(e) => setSuggestForm({ ...suggestForm, description: e.target.value })} required />
+                                        <label className="block text-xs font-bold uppercase text-slate-400 mb-1.5 tracking-wider">Description</label>
+                                        <textarea className="input-field py-2.5" rows="3" placeholder="Briefly describe the activity" value={suggestForm.description} onChange={(e) => setSuggestForm({ ...suggestForm, description: e.target.value })} required />
                                     </div>
                                     <div className="flex gap-3 pt-2">
-                                        <button type="button" onClick={() => setShowSuggestModal(false)} className="flex-1 btn-secondary py-2">Cancel</button>
-                                        <button type="submit" className="flex-[2] btn-primary py-2 font-bold">Submit Suggestion</button>
+                                        <button type="button" onClick={() => setShowSuggestModal(false)} className="flex-1 btn-secondary py-2.5">Cancel</button>
+                                        <button type="submit" className="flex-[2] btn-primary py-2.5 font-bold">Submit Suggestion</button>
                                     </div>
                                 </form>
                             </motion.div>
@@ -779,15 +793,15 @@ const Communities = () => {
                 {/* Join Modal */}
                 <AnimatePresence>
                     {showJoinModal && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
                             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="glass-card w-full max-w-md p-8">
-                                <h3 className="text-2xl font-outfit font-bold mb-2">Join Anonymously</h3>
+                                <h3 className="text-xl font-outfit font-bold mb-2 text-white">Join <span className="gradient-text">Anonymously</span></h3>
                                 <p className="text-slate-500 text-sm mb-6">Choose a temporary alias for this community.</p>
-                                <form onSubmit={handleJoin} className="space-y-6">
-                                    <input type="text" className="input-field" placeholder="e.g. SilentForest77" value={tempUsername} onChange={(e) => setTempUsername(e.target.value)} required autoFocus />
+                                <form onSubmit={handleJoin} className="space-y-5">
+                                    <input type="text" className="input-field py-3" placeholder="e.g. SilentForest77" value={tempUsername} onChange={(e) => setTempUsername(e.target.value)} required autoFocus />
                                     <div className="flex items-center gap-3">
-                                        <button type="button" onClick={() => setShowJoinModal(false)} className="flex-1 btn-secondary">Cancel</button>
-                                        <button type="submit" disabled={joining} className="flex-1 btn-primary flex items-center justify-center gap-2">
+                                        <button type="button" onClick={() => setShowJoinModal(false)} className="flex-1 btn-secondary py-2.5">Cancel</button>
+                                        <button type="submit" disabled={joining} className="flex-1 btn-primary flex items-center justify-center gap-2 py-2.5">
                                             {joining ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Enter Room'}
                                         </button>
                                     </div>

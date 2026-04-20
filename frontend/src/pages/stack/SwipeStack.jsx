@@ -4,175 +4,299 @@ import api from '../../api/axios';
 import Layout from '../../components/Layout';
 import { StackSkeleton } from '../../components/Skeletons';
 import { toast } from 'react-hot-toast';
-import { X, MessageSquare, Sparkles, User, Shield } from 'lucide-react';
+import { X, Sparkles, User, Shield, Zap, Coffee, ChevronRight, Apple, Ghost } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const SwipeCard = ({ user, onSwipe, isTop }) => {
-  const x = useMotionValue(0);
-  const rotate = useTransform(x, [-200, 200], [-25, 25]);
-  const opacity = useTransform(x, [-200, -150, 0, 150, 200], [0, 1, 1, 1, 0]);
-  const iconScale = useTransform(x, [-100, 0, 100], [1.5, 1, 1.5]);
+    const x = useMotionValue(0);
+    const rotate = useTransform(x, [-200, 200], [-25, 25]);
+    const opacity = useTransform(x, [-200, -150, 0, 150, 200], [0, 1, 1, 1, 0]);
+    const scale = useTransform(x, [-200, 0, 200], [0.8, 1, 0.8]);
+    const resonateScale = useTransform(x, [-150, 0], [1.25, 1]);
+    const passScale = useTransform(x, [0, 150], [1, 1.25]);
 
-  const swipeLeftColor = useTransform(x, [-100, 0], ['#f43f5e', '#94a3b8']);
-  const swipeRightColor = useTransform(x, [0, 100], ['#94a3b8', '#10b981']);
+    const handleDragEnd = (event, info) => {
+        if (info.offset.x > 120) {
+            onSwipe('passed'); // Swipe Right to Pass
+        } else if (info.offset.x < -120) {
+            onSwipe('initiated_chat'); // Swipe Left to Resonate
+        }
+    };
 
-  const handleDragEnd = (event, info) => {
-    if (info.offset.x > 100) {
-      onSwipe('passed');
-    } else if (info.offset.x < -100) {
-      onSwipe('initiated_chat');
-    }
-  };
+    return (
+        <motion.div
+            style={{ x, rotate, opacity, scale, cursor: isTop ? 'grab' : 'default' }}
+            drag={isTop ? 'x' : false}
+            dragConstraints={{ left: 0, right: 0 }}
+            onDragEnd={handleDragEnd}
+            className={`absolute inset-0 w-full h-full glass-card overflow-hidden transition-shadow ${isTop ? 'z-20 shadow-[0_20px_50px_rgba(0,0,0,0.5)]' : 'z-10 scale-[0.92] opacity-40 -translate-y-4'}`}
+        >
+            <div className="absolute inset-0 bg-gradient-to-b from-primary-600/[0.1] via-transparent to-purple-800/[0.1] pointer-events-none"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/[0.08] rounded-full blur-[100px] -mr-32 -mt-32"></div>
 
-  return (
-    <motion.div
-      style={{ x, rotate, opacity, cursor: isTop ? 'grab' : 'default' }}
-      drag={isTop ? 'x' : false}
-      dragConstraints={{ left: 0, right: 0 }}
-      onDragEnd={handleDragEnd}
-      className={`absolute inset-0 w-full h-full glass-card overflow-hidden transition-shadow ${isTop ? 'shadow-xl z-20' : 'z-10 scale-[0.98] blur-[1px]'}`}
-    >
-      <div className="h-full flex flex-col p-8">
-        <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6">
-          <div className="w-32 h-32 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center relative">
-            <User className="w-16 h-16 text-primary-600 dark:text-primary-400" />
-            <div className="absolute -bottom-2 bg-white dark:bg-slate-800 px-4 py-1 rounded-full shadow-sm border border-slate-100 dark:border-slate-700">
-              <span className="text-xs font-bold text-primary-600">
-                 {Math.round(user.matchScore * 100)}% Match
-              </span>
+            <div className="h-full flex flex-col p-10 relative z-10">
+                <div className="flex-1 flex flex-col items-center justify-center text-center space-y-12">
+
+                    {/* Avatar Area - Reference Panel 3 */}
+                    <div className="relative group">
+                        <div className="absolute inset-0 bg-primary-500/20 rounded-full blur-2xl group-hover:blur-3xl transition-all"></div>
+                        <div className="w-40 h-40 rounded-full bg-[#0a0a1a] border-2 border-primary-500/40 flex items-center justify-center relative overflow-hidden group-hover:border-primary-500 transition-colors">
+                            <div className="w-full h-full bg-gradient-to-br from-primary-600/10 to-purple-600/10 flex items-center justify-center overflow-hidden">
+                                <User className="w-20 h-20 text-primary-500/20 group-hover:text-primary-500/40 transition-all" />
+                            </div>
+                        </div>
+                        {/* Match Percentage Glow */}
+                        <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-[#050510] border border-primary-500/50 px-5 py-1.5 rounded-full shadow-[0_0_20px_rgba(99,102,241,0.3)]">
+                            <span className="text-xs font-black text-white flex items-center gap-2 tracking-widest uppercase">
+                                <Zap className="w-3.5 h-3.5 text-primary-400 fill-current" />
+                                {Math.round((user.matchScore || 0.85) * 100)}% Match
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className="pt-6">
+                        <h2 className="text-3xl font-outfit font-extrabold text-white mb-2 tracking-tight group-hover:gradient-text transition-all">
+                            {user.username}
+                        </h2>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/[0.04] text-slate-500 rounded-full uppercase tracking-[0.2em] text-[10px] font-black border border-white/5">
+                            <Shield className="w-3 h-3" />
+                            {user.socializingCapability || 'Listener'}
+                        </div>
+                    </div>
+
+                    <p className="text-slate-400 leading-relaxed italic text-sm max-w-xs font-medium">
+                        "{user.bio || 'Silence is a friend who never betrays...'}"
+                    </p>
+
+                    {/* Interests - Reference Icons style */}
+                    <div className="flex flex-wrap justify-center gap-3 max-w-sm pt-4">
+                        {(user.interests || ['Deep Talk', 'Reading', 'Stargazing']).slice(0, 4).map((interest, i) => (
+                            <div key={i} className="flex items-center gap-2 px-4 py-2 bg-white/[0.03] border border-white/[0.06] rounded-xl text-[11px] font-bold text-slate-300 hover:bg-white/[0.06] transition-colors">
+                                <Sparkles className="w-3 h-3 text-primary-500" />
+                                {interest}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Card Actions - Bottom Navigation Style */}
+                <div className="pt-10 border-t border-white/[0.06] flex items-center justify-between">
+                    {/* Resonate (Left) */}
+                    <motion.div 
+                        style={{ scale: resonateScale }}
+                        className="flex flex-col items-center gap-2 text-primary-500 hover:text-primary-400 transition-all cursor-pointer"
+                    >
+                        <div className="p-4 rounded-2xl border border-primary-500/20 bg-primary-500/[0.05] hover:bg-primary-500/20 transition-all shadow-[0_0_20px_rgba(99,102,241,0.1)]">
+                            <Sparkles className="w-6 h-6" />
+                        </div>
+                        <span className="text-[9px] uppercase font-black tracking-[0.2em]">Resonate</span>
+                    </motion.div>
+
+                    <div className="flex flex-col items-center gap-3">
+                        <div className="w-1.5 h-1.5 bg-primary-500 rounded-full animate-ping"></div>
+                        <span className="text-[10px] text-slate-700 font-black uppercase tracking-[0.3em]">Discovering</span>
+                    </div>
+
+                    {/* Pass (Right) */}
+                    <motion.div 
+                        style={{ scale: passScale }}
+                        className="flex flex-col items-center gap-2 text-slate-600 hover:text-white transition-all cursor-pointer"
+                    >
+                        <div className="p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/10 transition-all">
+                            <X className="w-6 h-6" />
+                        </div>
+                        <span className="text-[9px] uppercase font-black tracking-[0.2em]">Pass</span>
+                    </motion.div>
+                </div>
             </div>
-          </div>
-          
-          <div>
-            <h2 className="text-2xl font-outfit font-bold text-slate-900 dark:text-white mb-1">
-              {user.username}
-            </h2>
-            <div className="flex items-center justify-center gap-2">
-               <span className="text-xs px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-lg uppercase tracking-wider font-bold">
-                 {user.socializingCapability} social
-               </span>
-            </div>
-          </div>
-
-          <p className="text-slate-600 dark:text-slate-400 leading-relaxed italic">
-            "{user.bio || 'Silence is my favorite language...'}"
-          </p>
-        </div>
-
-        <div className="pt-8 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-          <motion.div style={{ scale: iconScale, color: swipeRightColor }} className="flex flex-col items-center gap-1">
-             <div className="p-4 rounded-full border border-current">
-               <X className="w-6 h-6" />
-             </div>
-             <span className="text-[10px] uppercase font-bold tracking-widest">Pass</span>
-          </motion.div>
-
-          <div className="flex flex-col items-center gap-2">
-            <Sparkles className="w-5 h-5 text-amber-400 animate-pulse" />
-            <span className="text-[10px] text-slate-400 font-medium">DRAG TO DISCOVER</span>
-          </div>
-
-          <motion.div style={{ scale: iconScale, color: swipeLeftColor }} className="flex flex-col items-center gap-1">
-             <div className="p-4 rounded-full border border-current">
-               <MessageSquare className="w-6 h-6" />
-             </div>
-             <span className="text-[10px] uppercase font-bold tracking-widest">Connect</span>
-          </motion.div>
-        </div>
-      </div>
-    </motion.div>
-  );
+        </motion.div>
+    );
 };
 
 const SwipeStack = () => {
-  const [stack, setStack] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+    const [stack, setStack] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [view, setView] = useState('intro'); // 'intro' or 'stack'
+    const [errorStatus, setErrorStatus] = useState(null);
+    const navigate = useNavigate();
 
-  const fetchStack = async () => {
-    try {
-      const response = await api.get('/interactions/stack');
-      setStack(response.data);
-    } catch (error) {
-      toast.error('Failed to load discovery stack');
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchStack = async () => {
+        try {
+            setLoading(true);
+            const response = await api.get('/interactions/stack');
+            setStack(response.data);
+            setErrorStatus(null);
+        } catch (error) {
+            if (error.response?.status === 400) {
+                setErrorStatus(400);
+            } else {
+                toast.error('Failed to load discovery stack');
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  useEffect(() => {
-    fetchStack();
-  }, []);
+    useEffect(() => {
+        fetchStack();
+    }, []);
 
-  const handleSwipe = async (action) => {
-    const swipedUser = stack[0];
-    if (!swipedUser) return;
+    const handleSwipe = async (action) => {
+        const swipedUser = stack[0];
+        if (!swipedUser) return;
 
-    // Optimistic UI
-    setStack(prev => prev.slice(1));
+        setStack(prev => prev.slice(1));
 
-    try {
-      const response = await api.post('/interactions/swipe', {
-        swipeeId: swipedUser._id,
-        action: action
-      });
+        try {
+            const response = await api.post('/interactions/swipe', {
+                swipeeId: swipedUser._id,
+                action: action
+            });
 
-      if (action === 'initiated_chat') {
-        toast.success(`Interaction initiated with ${swipedUser.username}`);
-        navigate(`/chat/${response.data.conversationId}`);
-      }
-    } catch (error) {
-      toast.error('Action failed. Try again.');
-      // Revert if critical
-      fetchStack();
-    }
-  };
+            if (action === 'initiated_chat') {
+                toast.success(`Resonated with ${swipedUser.username}!`);
+                navigate(`/chat/${response.data.conversationId}`);
+            }
+        } catch (error) {
+            toast.error('Connection lost in the silence. Try again.');
+            fetchStack();
+        }
+    };
 
-  return (
-    <Layout>
-      <div className="h-[calc(100vh-16rem)] flex flex-col items-center justify-center">
-        <div className="text-center mb-12">
-          <h1 className="text-2xl font-outfit font-bold mb-2">Discovery Stack</h1>
-          <p className="text-slate-500 text-sm">Find others who resonate with your frequency</p>
-        </div>
+    const IntroView = () => (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 1.1 }}
+            className="flex flex-col lg:flex-row items-center gap-16 w-full max-w-5xl mx-auto"
+        >
+            {/* Left Column - Intro Card style */}
+            <div className="flex-1 space-y-12">
+                <div className="space-y-6">
+                    <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-slate-500">Curated Journey</h3>
+                    <h1 className="text-5xl md:text-6xl font-outfit font-extrabold text-white leading-tight tracking-tight">
+                        QUIET<br /><span className="gradient-text">CONVERSATIONS</span>
+                    </h1>
+                </div>
 
-        <div className="relative w-full max-w-sm aspect-[3/4]">
-          <AnimatePresence>
-            {loading ? (
-              <StackSkeleton />
-            ) : stack.length > 0 ? (
-              stack.map((u, i) => (
-                i < 2 && (
-                  <SwipeCard
-                    key={u._id}
-                    user={u}
-                    isTop={i === 0}
-                    onSwipe={handleSwipe}
-                  />
-                )
-              ))
-            ) : (
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 glass-card border-dashed"
-              >
-                <Shield className="w-12 h-12 text-slate-300 mb-4" />
-                <h3 className="text-lg font-medium text-slate-900 dark:text-white">No more matches</h3>
-                <p className="text-sm text-slate-500 mt-2">The room is quiet for now. Come back later to find new frequencies.</p>
-                <button 
-                   onClick={fetchStack}
-                   className="mt-6 btn-secondary text-sm"
-                >
-                  Refresh Stack
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-    </Layout>
-  );
+                <div className="glass-card p-10 relative overflow-hidden group border-primary-500/20 max-w-md">
+                    <div className="absolute inset-0 bg-primary-600/[0.03] pointer-events-none"></div>
+                    <div className="flex flex-col items-center gap-8 relative z-10 text-center">
+                        <div className="w-24 h-24 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center shadow-[0_0_30px_rgba(99,102,241,0.1)]">
+                            <Coffee className="w-12 h-12 text-primary-400 animate-float" />
+                        </div>
+                        <div className="space-y-4">
+                            <h4 className="text-xl font-bold text-white">Thoughtful pairing, hidden profile.</h4>
+                            <p className="text-slate-500 text-sm leading-relaxed font-medium capitalize">Connect deeply, at your own pace. Discover frequencies that match your own.</p>
+                        </div>
+                        <button
+                            onClick={() => setView('stack')}
+                            className="btn-primary w-full py-4 mt-4 flex items-center justify-center gap-3"
+                        >
+                            <span>START JOURNEY</span>
+                            <ChevronRight className="w-5 h-5" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Right Column - Preview Image style */}
+            <div className="flex-1 hidden lg:block relative">
+                <div className="absolute inset-0 bg-primary-500/10 rounded-full blur-[120px] -z-10"></div>
+                <img
+                    src="/gen_mascot_welcome.png"
+                    className="w-full h-auto max-w-md object-contain animate-float drop-shadow-[0_0_40px_rgba(99,102,241,0.2)]"
+                    alt="Journey"
+                />
+            </div>
+        </motion.div>
+    );
+
+    const MissingInterestsView = () => (
+        <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex flex-col items-center text-center max-w-sm mx-auto"
+        >
+            <div className="w-24 h-24 rounded-full bg-primary-500/10 border border-primary-500/20 flex items-center justify-center mb-8 shadow-[0_0_40px_rgba(99,102,241,0.15)]">
+                <Sparkles className="w-10 h-10 text-primary-400 animate-pulse" />
+            </div>
+
+            <h3 className="text-2xl font-outfit font-bold text-white mb-4">A Silent Frequency</h3>
+            <p className="text-slate-500 text-sm leading-relaxed mb-10 font-medium italic">
+                Your quiet corner needs a few more details before the resonance can find you. Tell us about your world to start discovering others.
+            </p>
+
+            <button
+                onClick={() => navigate('/profile')}
+                className="btn-primary w-full py-4 flex items-center justify-center gap-3 group"
+            >
+                <span>SEED YOUR FREQUENCY</span>
+                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+        </motion.div>
+    );
+
+    return (
+        <Layout>
+            <div className="min-h-[calc(100vh-14rem)] flex flex-col items-center justify-center py-10">
+                <AnimatePresence mode="wait">
+                    {errorStatus === 400 ? (
+                        <MissingInterestsView key="missing" />
+                    ) : view === 'intro' ? (
+                        <IntroView key="intro" />
+                    ) : (
+                        <motion.div
+                            key="stack"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="w-full max-w-sm"
+                        >
+                            <div className="text-center mb-12">
+                                <h2 className="text-xs font-bold uppercase tracking-[0.5em] text-slate-600 mb-2">Finding Your Frequency</h2>
+                                <div className="h-1 w-12 bg-primary-600 mx-auto rounded-full"></div>
+                            </div>
+
+                            <div className="relative w-full aspect-[3/6] select-none">
+                                <AnimatePresence>
+                                    {loading ? (
+                                        <StackSkeleton />
+                                    ) : stack.length > 0 ? (
+                                        stack.map((u, i) => (
+                                            i < 2 && (
+                                                <SwipeCard
+                                                    key={u._id}
+                                                    user={u}
+                                                    isTop={i === 0}
+                                                    onSwipe={handleSwipe}
+                                                />
+                                            )
+                                        ))
+                                    ) : (
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            className="absolute inset-0 flex flex-col items-center justify-center text-center p-10 glass-card border-dashed border-white/10"
+                                        >
+                                            <Ghost className="w-16 h-16 text-slate-700 mb-6 animate-float" />
+                                            <h3 className="text-xl font-bold text-white mb-2">The room is empty</h3>
+                                            <p className="text-sm text-slate-500 italic max-w-[200px] mx-auto capitalize">Waiting for new frequencies to drift in. Refresh in a while.</p>
+                                            <button
+                                                onClick={() => { setView('intro'); fetchStack(); }}
+                                                className="mt-10 btn-secondary text-sm"
+                                            >
+                                                REFRESH ROOM
+                                            </button>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+        </Layout>
+    );
 };
 
 export default SwipeStack;

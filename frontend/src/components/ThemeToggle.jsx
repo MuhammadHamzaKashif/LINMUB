@@ -1,35 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Sun, Moon } from 'lucide-react';
+import React from 'react';
+import { Moon } from 'lucide-react';
 
+// Theme toggle is now cosmetic-only since the app forces dark mode
 const ThemeToggle = () => {
-  const [isDark, setIsDark] = useState(
-    document.documentElement.classList.contains('dark') ||
-    localStorage.getItem('theme') === 'dark' ||
-    (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)
-  );
-
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDark]);
-
   return (
-    <button
-      onClick={() => setIsDark(!isDark)}
-      className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200"
-      aria-label="Toggle theme"
-    >
-      {isDark ? (
-        <Sun className="w-5 h-5 text-amber-400" />
-      ) : (
-        <Moon className="w-5 h-5 text-primary-600" />
-      )}
-    </button>
+    <div className="flex items-center gap-2 text-slate-500">
+      <Moon className="w-4 h-4 text-primary-400 drop-shadow-[0_0_6px_rgba(99,102,241,0.5)]" />
+      <span className="text-[10px] uppercase tracking-wider font-bold">Dark Mode</span>
+    </div>
   );
 };
 

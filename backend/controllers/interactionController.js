@@ -59,6 +59,48 @@ export const getSwipeStack = async (req, res) => {
   }
 };
 
+export const getCommonGrounds = async (req, res) => {
+  try {
+    const currentUser = await User.findById(req.user._id);
+    if (!currentUser.interestEmbedding || currentUser.interestEmbedding.length === 0) {
+      return res.status(200).json([]); // No profile, no common grounds
+    }
+
+    const similarUsers = await User.aggregate([
+      {
+        $vectorSearch: {
+          index: "vector_index",
+          path: "interestEmbedding",
+          queryVector: currentUser.interestEmbedding,
+          numCandidates: 50,
+          limit: 10
+        }
+      },
+      { $match: { _id: { $ne: req.user._id } } },
+      { $project: { interests: 1 } }
+    ]);
+
+    // Flatten and count interests
+    const interestCounts = {};
+    similarUsers.forEach(u => {
+      u.interests?.forEach(interest => {
+        interestCounts[interest] = (interestCounts[interest] || 0) + 1;
+      });
+    });
+
+    // Sort by popularity and filter out user's own interests
+    const commonInterests = Object.entries(interestCounts)
+      .sort((a, b) => b[1] - a[1])
+      .map(entry => entry[0])
+      .filter(i => !currentUser.interests.includes(i))
+      .slice(0, 10);
+
+    res.status(200).json(commonInterests);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 /*
     if swiped left weinitiate a chat
     and create the conversation instantly
@@ -73,13 +115,16 @@ export const recordSwipe = async (req, res) => {
       return res.status(400).json({ message: "Invalid action. Must be 'passed' or 'initiated_chat'" });
     }
 
-    const newInteraction = new Interaction({
-      swiper: currentUserId,
-      swipee: swipeeId,
-      action: action
-    });
-
-    await newInteraction.save();
+    let interaction = await Interaction.findOne({ swiper: currentUserId, swipee: swipeeId });
+    
+    if (!interaction) {
+      interaction = new Interaction({
+        swiper: currentUserId,
+        swipee: swipeeId,
+        action: action
+      });
+      await interaction.save();
+    }
 
     if (action === 'initiated_chat') {
        let conversation = await Conversation.findOne({

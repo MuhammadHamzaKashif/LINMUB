@@ -7,14 +7,14 @@ import { toast } from 'react-hot-toast';
 import { 
   User, 
   Tag, 
-  Info, 
   Save, 
   Loader2, 
   Plus, 
   X, 
   Eye, 
   EyeOff,
-  UserCircle
+  UserCircle,
+  Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -89,27 +89,29 @@ const Profile = () => {
     <Layout>
       <div className="max-w-2xl mx-auto pb-12">
         <header className="mb-8">
-          <h1 className="text-3xl font-outfit font-bold text-slate-900 dark:text-white">Profile Settings</h1>
-          <p className="text-slate-500 mt-2">Manage your frequency and personal space</p>
+          <h1 className="text-3xl font-outfit font-bold text-white">
+            Profile <span className="gradient-text">Settings</span>
+          </h1>
+          <p className="text-slate-500 mt-2 text-sm">Manage your frequency and personal space</p>
         </header>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* Account Details Section */}
           <motion.section 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass-card p-8 border dark:border-slate-800"
+            className="glass-card p-8"
           >
             <div className="flex items-center gap-3 mb-6">
-              <UserCircle className="w-5 h-5 text-primary-500" />
-              <h2 className="text-lg font-bold">Personal Information</h2>
+              <UserCircle className="w-5 h-5 text-primary-400 drop-shadow-[0_0_6px_rgba(99,102,241,0.5)]" />
+              <h2 className="text-lg font-bold text-white">Personal Information</h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="col-span-1 md:col-span-2">
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Short Bio</label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Short Bio</label>
                 <textarea
-                  className="input-field h-24 resize-none"
+                  className="input-field h-24 resize-none py-3"
                   placeholder="Tell others about yourself..."
                   value={formData.bio}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
@@ -117,10 +119,10 @@ const Profile = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Age</label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Age</label>
                 <input
                   type="number"
-                  className="input-field"
+                  className="input-field py-3"
                   placeholder="e.g. 24"
                   value={formData.age}
                   onChange={(e) => setFormData({ ...formData, age: e.target.value })}
@@ -128,9 +130,9 @@ const Profile = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Gender</label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Gender</label>
                 <select
-                  className="input-field appearance-none"
+                  className="input-field appearance-none py-3"
                   value={formData.gender}
                   onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
                 >
@@ -143,9 +145,9 @@ const Profile = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Socializing Style</label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Socializing Style</label>
                 <select
-                  className="input-field appearance-none"
+                  className="input-field appearance-none py-3"
                   value={formData.socializingCapability}
                   onChange={(e) => setFormData({ ...formData, socializingCapability: e.target.value })}
                 >
@@ -155,25 +157,25 @@ const Profile = () => {
                 </select>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-end">
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, isVisible: !formData.isVisible })}
-                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border transition-all ${
+                  className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border transition-all ${
                     formData.isVisible 
-                      ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-200 dark:border-primary-800 text-primary-600'
-                      : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500'
+                      ? 'bg-primary-500/10 border-primary-500/30 text-primary-400 shadow-[0_0_15px_rgba(99,102,241,0.1)]'
+                      : 'bg-white/[0.03] border-white/[0.08] text-slate-500'
                   }`}
                 >
                   {formData.isVisible ? (
                     <>
                       <Eye className="w-4 h-4" />
-                      <span>Visible to others</span>
+                      <span className="text-sm">Visible to others</span>
                     </>
                   ) : (
                     <>
                       <EyeOff className="w-4 h-4" />
-                      <span>Hidden Mode</span>
+                      <span className="text-sm">Hidden Mode</span>
                     </>
                   )}
                 </button>
@@ -186,14 +188,14 @@ const Profile = () => {
              initial={{ opacity: 0, y: 10 }}
              animate={{ opacity: 1, y: 0 }}
              transition={{ delay: 0.1 }}
-             className="glass-card p-8 border dark:border-slate-800"
+             className="glass-card p-8"
           >
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
-                <Tag className="w-5 h-5 text-primary-500" />
-                <h2 className="text-lg font-bold">Interests</h2>
+                <Tag className="w-5 h-5 text-primary-400 drop-shadow-[0_0_6px_rgba(99,102,241,0.5)]" />
+                <h2 className="text-lg font-bold text-white">Interests</h2>
               </div>
-              <span className={`text-xs font-medium ${formData.interests.length < 3 ? 'text-amber-500' : 'text-slate-400'}`}>
+              <span className={`text-xs font-medium ${formData.interests.length < 3 ? 'text-amber-400' : 'text-slate-500'}`}>
                 {formData.interests.length} / 10
               </span>
             </div>
@@ -207,13 +209,13 @@ const Profile = () => {
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0.8, opacity: 0 }}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-primary-500/15 text-primary-300 rounded-full text-sm font-medium border border-primary-500/20"
                     >
                       {interest}
                       <button 
                         type="button"
                         onClick={() => removeInterest(interest)}
-                        className="hover:text-red-500 transition-colors"
+                        className="hover:text-red-400 transition-colors ml-0.5"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -221,7 +223,7 @@ const Profile = () => {
                   ))}
                 </AnimatePresence>
                 {formData.interests.length === 0 && (
-                   <p className="text-sm text-slate-400 italic">No interests added yet...</p>
+                   <p className="text-sm text-slate-600 italic">No interests added yet...</p>
                 )}
               </div>
 
@@ -229,7 +231,7 @@ const Profile = () => {
                 <input
                   type="text"
                   placeholder="e.g. Reading, Star Gazing"
-                  className="input-field"
+                  className="input-field py-3"
                   value={interestInput}
                   onChange={(e) => setInterestInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleAddInterest(e)}
@@ -242,9 +244,10 @@ const Profile = () => {
                   <Plus className="w-5 h-5" />
                 </button>
               </div>
-              <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">
-                 ADD AT LEAST 3 INTERESTS TO GENERATE YOUR AI PROFILE
-              </p>
+              <div className="flex items-center gap-2 text-[10px] text-slate-500 uppercase tracking-wider font-bold">
+                <Sparkles className="w-3 h-3 text-amber-400/60" />
+                <span>add at least 3 interests to generate your ai profile</span>
+              </div>
             </div>
           </motion.section>
 
@@ -252,7 +255,7 @@ const Profile = () => {
             <button
                type="submit"
                disabled={loading}
-               className="flex-1 btn-primary flex items-center justify-center gap-2 h-12 text-lg"
+               className="flex-1 btn-primary flex items-center justify-center gap-2 h-12 text-base font-semibold"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -268,7 +271,7 @@ const Profile = () => {
               onClick={() => navigate('/home')}
               className="btn-secondary h-12 px-8"
             >
-              Discard Changes
+              Discard
             </button>
           </footer>
         </form>

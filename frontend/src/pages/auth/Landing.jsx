@@ -2,11 +2,164 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-hot-toast';
-import { Shield, UserPlus, LogIn, Loader2 } from 'lucide-react';
-import ThemeToggle from '../../components/ThemeToggle';
+import { LogIn, UserPlus, Loader2, Apple, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// Stable sub-components defined outside the main render function
+// to prevent unmounting/remounting on parent state changes.
+
+const WelcomeView = ({ onStartJourney, onSignInWithGoogle, onSignInWithEmail }) => (
+    <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 1.05 }}
+        className="flex flex-col items-center text-center max-w-lg w-full"
+    >
+        <p className="text-slate-500 uppercase tracking-[0.3em] font-medium text-[10px] mb-8">Recently Arrived!</p>
+
+        <h1 className="text-7xl font-outfit font-extrabold text-white mb-2 tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+            LINMUB
+        </h1>
+
+        <div className="relative my-12 group">
+            <div className="absolute inset-0 bg-primary-500/20 rounded-full blur-[60px] animate-pulse"></div>
+            <img
+                src="/gen_mascot_welcome.png"
+                alt="Mascot"
+                className="w-64 h-64 object-contain relative z-10 animate-float"
+            />
+        </div>
+
+        <div className="space-y-4 mb-12">
+            <p className="text-xl font-bold text-slate-200">
+                LINMUB: <span className="text-slate-400">Your private, quiet corner of connection.</span>
+            </p>
+            <p className="text-slate-500 text-sm italic">
+                Finding your people should feel like coming home.
+            </p>
+        </div>
+
+        <div className="flex flex-col gap-3 w-full max-w-xs transition-all">
+            <button
+                onClick={onStartJourney}
+                className="btn-primary py-4 rounded-2xl flex items-center justify-center gap-3 group overflow-hidden relative"
+            >
+                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                <Apple className="w-5 h-5 fill-current" />
+                <span className="relative z-10">BEGIN JOURNEY</span>
+            </button>
+
+            {/* <button 
+                onClick={onSignInWithGoogle}
+                className="w-full h-14 rounded-2xl bg-[#2b59ca] text-white flex items-center justify-center gap-3 hover:bg-[#3466e8] transition-all font-bold shadow-lg"
+            >
+                <img src="https://www.google.com/favicon.ico" className="w-4 h-4 brightness-0 invert" alt="G" />
+                <span>SIGN IN WITH GOOGLE</span>
+            </button> */}
+
+            <button
+                onClick={onSignInWithEmail}
+                className="w-full h-14 rounded-2xl bg-primary-600/20 text-primary-400 border border-primary-500/30 flex items-center justify-center gap-3 hover:bg-primary-600/30 transition-all font-bold"
+            >
+                <Mail className="w-5 h-5" />
+                <span>SIGN IN</span>
+            </button>
+        </div>
+
+        <p className="text-[11px] text-slate-600 italic mt-12 tracking-wide font-medium">
+            Connections that feel right.<br />
+            Private, thoughtful, and cozy.
+        </p>
+    </motion.div>
+);
+
+const AuthView = ({ isLogin, isLoading, formData, setFormData, onSubmit, onToggleMode, onBack }) => (
+    <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -20 }}
+        className="w-full max-w-md"
+    >
+        <div className="flex items-center gap-4 mb-10">
+            <button
+                onClick={onBack}
+                className="p-2 hover:bg-white/5 rounded-full transition-colors text-slate-500"
+            >
+                <LogIn className="w-5 h-5 rotate-180" />
+            </button>
+            <h2 className="text-3xl font-outfit font-bold text-white">
+                {isLogin ? 'Welcome Back' : 'Join the Room'}
+            </h2>
+        </div>
+
+        <div className="glass-card p-8 border-white/[0.08]">
+            <form onSubmit={onSubmit} className="space-y-5">
+                <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Username</label>
+                    <input
+                        type="text"
+                        required
+                        className="input-field"
+                        placeholder="Your frequency name"
+                        value={formData.username}
+                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Password</label>
+                    <input
+                        type="password"
+                        required
+                        className="input-field"
+                        placeholder="••••••••"
+                        value={formData.password}
+                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    />
+                </div>
+
+                {!isLogin && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        className="space-y-5"
+                    >
+                        <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Socializing Style</label>
+                            <select
+                                className="input-field appearance-none"
+                                value={formData.socializingCapability}
+                                onChange={(e) => setFormData({ ...formData, socializingCapability: e.target.value })}
+                            >
+                                <option value="Listener">Listener</option>
+                                <option value="Takes Time">Takes Time to Open Up</option>
+                                <option value="Open Communicator">Open Communicator</option>
+                            </select>
+                        </div>
+                    </motion.div>
+                )}
+
+                <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full btn-primary h-14 text-lg mt-8"
+                >
+                    {isLoading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : isLogin ? 'Enter Agora' : 'Secure Your Spot'}
+                </button>
+            </form>
+
+            <button
+                onClick={onToggleMode}
+                className="w-full mt-6 text-sm text-slate-500 hover:text-primary-400 transition-colors font-medium"
+            >
+                {isLogin ? "Don't have a corner yet? Join us" : "Already a member? Sign in"}
+            </button>
+        </div>
+    </motion.div>
+);
+
 const Landing = () => {
+    const [view, setView] = useState('welcome'); // 'welcome' or 'auth'
     const [isLogin, setIsLogin] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const { login, register } = useAuth();
@@ -25,10 +178,10 @@ const Landing = () => {
         try {
             if (isLogin) {
                 await login(formData.username, formData.password);
-                toast.success(`Welcome back, ${formData.username}!`);
+                toast.success(`Welcome back!`);
             } else {
                 await register(formData);
-                toast.success('Registration successful! Welcome to LINMUB.');
+                toast.success('Welcome to LINMUB!');
             }
             navigate('/home');
         } catch (error) {
@@ -39,124 +192,46 @@ const Landing = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4">
-            <div className="absolute top-6 right-6">
-                <ThemeToggle />
+        <div className="min-h-screen bg-[#050510] flex flex-col items-center justify-center p-4 relative overflow-hidden noise-overlay">
+            {/* Background elements */}
+            <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute top-1/3 -left-20 w-[500px] h-[500px] bg-primary-600/[0.08] rounded-full blur-[150px]"></div>
+                <div className="absolute bottom-1/4 -right-20 w-[400px] h-[400px] bg-purple-600/[0.06] rounded-full blur-[120px]"></div>
+                {/* Random tiny stars */}
+                {[...Array(40)].map((_, i) => (
+                    <div
+                        key={i}
+                        className="absolute w-0.5 h-0.5 bg-white/20 rounded-full animate-pulse-slow"
+                        style={{
+                            top: `${Math.random() * 100}%`,
+                            left: `${Math.random() * 100}%`,
+                            animationDelay: `${Math.random() * 5}s`
+                        }}
+                    />
+                ))}
             </div>
 
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-md"
-            >
-                <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center p-3 bg-primary-100 dark:bg-primary-900/30 rounded-2xl mb-4">
-                        <Shield className="w-8 h-8 text-primary-600 dark:text-primary-400" />
-                    </div>
-                    <h1 className="text-3xl font-outfit font-bold text-slate-900 dark:text-white">LINMUB</h1>
-                    <p className="text-slate-500 dark:text-slate-400 mt-2 font-light italic">
-                        "A peaceful corner for introverts"
-                    </p>
-                </div>
-
-                <div className="glass-card p-8 border dark:border-slate-800">
-                    <div className="flex mb-8 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
-                        <button
-                            onClick={() => setIsLogin(true)}
-                            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${isLogin ? 'bg-white dark:bg-slate-700 shadow-sm text-primary-700 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-200'
-                                }`}
-                        >
-                            Login
-                        </button>
-                        <button
-                            onClick={() => setIsLogin(false)}
-                            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${!isLogin ? 'bg-white dark:bg-slate-700 shadow-sm text-primary-700 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-200'
-                                }`}
-                        >
-                            Register
-                        </button>
-                    </div>
-
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 ml-1">Username</label>
-                            <input
-                                type="text"
-                                required
-                                className="input-field"
-                                placeholder="Unique identifier"
-                                value={formData.username}
-                                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 ml-1">Password</label>
-                            <input
-                                type="password"
-                                required
-                                className="input-field"
-                                placeholder="••••••••"
-                                value={formData.password}
-                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                            />
-                        </div>
-
-                        <AnimatePresence>
-                            {!isLogin && (
-                                <motion.div
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 'auto', opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    className="space-y-4 overflow-hidden"
-                                >
-                                    <div>
-                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 ml-1">Short Bio</label>
-                                        <textarea
-                                            className="input-field resize-none h-20"
-                                            placeholder="Tell us about your personal space..."
-                                            value={formData.bio}
-                                            onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 ml-1">Socializing Capability</label>
-                                        <select
-                                            className="input-field appearance-none"
-                                            value={formData.socializingCapability}
-                                            onChange={(e) => setFormData({ ...formData, socializingCapability: e.target.value })}
-                                        >
-                                            <option value="Listner">Listener</option>
-                                            <option value="Takes Time">Takes Time to Open Up</option>
-                                            <option value="Open Communicator">Open Communicator</option>
-                                        </select>
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-                        <button
-                            type="submit"
-                            disabled={isLoading}
-                            className="w-full btn-primary flex items-center justify-center gap-2 mt-6 h-11"
-                        >
-                            {isLoading ? (
-                                <Loader2 className="w-5 h-5 animate-spin" />
-                            ) : isLogin ? (
-                                <>
-                                    <LogIn className="w-5 h-5" />
-                                    <span>Enter the Room</span>
-                                </>
-                            ) : (
-                                <>
-                                    <UserPlus className="w-5 h-5" />
-                                    <span>Join the Community</span>
-                                </>
-                            )}
-                        </button>
-                    </form>
-                </div>
-            </motion.div>
+            <AnimatePresence mode="wait">
+                {view === 'welcome' ? (
+                    <WelcomeView
+                        key="welcome"
+                        onStartJourney={() => { setIsLogin(false); setView('auth'); }}
+                        onSignInWithGoogle={() => { setIsLogin(true); setView('auth'); }}
+                        onSignInWithEmail={() => { setIsLogin(true); setView('auth'); }}
+                    />
+                ) : (
+                    <AuthView
+                        key="auth"
+                        isLogin={isLogin}
+                        isLoading={isLoading}
+                        formData={formData}
+                        setFormData={setFormData}
+                        onSubmit={handleSubmit}
+                        onToggleMode={() => setIsLogin(!isLogin)}
+                        onBack={() => setView('welcome')}
+                    />
+                )}
+            </AnimatePresence>
         </div>
     );
 };
