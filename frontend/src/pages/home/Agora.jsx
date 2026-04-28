@@ -28,7 +28,7 @@ const Agora = () => {
     const [isPosting, setIsPosting] = useState(false);
     const { user } = useAuth();
     const navigate = useNavigate();
-    const scrollContainerRef = useRef(null);
+    const [selectedThoughtId, setSelectedThoughtId] = useState(null);
 
     const fetchData = async () => {
         setLoading(true);
@@ -167,105 +167,108 @@ const Agora = () => {
             <div className="space-y-10">
 
                 {/* Header Panel */}
-                <div className="flex flex-col lg:flex-row gap-8">
+                <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="flex-1 glass-card p-10 relative overflow-hidden group min-h-[280px] flex items-center"
+                        className="flex-1 glass-card p-6 md:p-10 relative overflow-hidden group min-h-0 md:min-h-[280px] flex items-center"
                     >
                         <div className="absolute inset-0 bg-gradient-to-br from-[#f468c0]/10 via-transparent to-[#3dadff]/10 pointer-events-none"></div>
                         <div className="absolute top-0 right-0 w-64 h-64 bg-[#3dadff]/10 rounded-full blur-[100px] -mr-32 -mt-32"></div>
 
-                        <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
+                        <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-10 text-center md:text-left w-full">
                             <img
                                 src="/gen_mascot_coffee.png"
                                 alt="Mascot"
-                                className="w-40 h-40 object-contain drop-shadow-[0_0_20px_rgba(61,173,255,0.4)] animate-float"
+                                className="w-24 h-24 md:w-40 md:h-40 object-contain drop-shadow-[0_0_20px_rgba(61,173,255,0.4)] animate-float"
                             />
-                            <div>
-                                <h1 className="text-4xl font-outfit font-extrabold text-white mb-4 tracking-tight">
+                            <div className="flex-1">
+                                <h1 className="text-2xl md:text-4xl font-outfit font-extrabold text-white mb-2 md:mb-4 tracking-tight">
                                     Your <span className="gradient-text">Quiet Corner</span>
                                 </h1>
-                                <p className="text-slate-400 text-sm leading-relaxed max-w-md font-medium">
-                                    Deep Connections, Quiet Spaces, Anonymous Communities, Thoughtful Pairing. Interest Led Discovery.
+                                <p className="text-slate-400 text-xs md:text-sm leading-relaxed max-w-md mx-auto md:mx-0 font-medium">
+                                    Deep Connections, Quiet Spaces, Anonymous Communities, Thoughtful Pairing.
                                 </p>
-                                <div className="flex gap-4 mt-8">
+                                <div className="flex flex-wrap justify-center md:justify-start gap-3 md:gap-4 mt-6 md:mt-8">
                                     <button
                                         onClick={() => setContent(' ')}
-                                        className="btn-primary flex items-center gap-2"
+                                        className="btn-primary flex items-center gap-2 py-2 px-4 text-sm"
                                     >
                                         <Plus className="w-4 h-4" />
                                         <span>Post Thought</span>
                                     </button>
-                                    <button className="btn-secondary" onClick={() => navigate('/stack')}>Start Journey</button>
+                                    <button className="btn-secondary py-2 px-4 text-sm" onClick={() => navigate('/stack')}>Start Journey</button>
                                 </div>
                             </div>
                         </div>
                     </motion.div>
 
                     {/* Common Grounds Widget */}
-                    <div className="w-full lg:w-80 glass-card p-8 flex flex-col justify-between">
+                    <div className="w-full lg:w-80 glass-card p-6 md:p-8 flex flex-col justify-between">
                         <div>
-                            <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-6 flex items-center gap-2">
+                            <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4 md:mb-6 flex items-center gap-2">
                                 <Sparkles className="w-3.5 h-3.5 text-[#3dadff]" />
                                 Common Grounds
                             </h3>
                             <div className="flex flex-wrap gap-2">
                                 {commonGrounds.length > 0 ? (
-                                    commonGrounds.map((tag) => (
+                                    commonGrounds.slice(0, 10).map((tag) => (
                                         <span
                                             key={tag}
-                                            className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs font-bold text-slate-400 hover:text-[#3dadff] hover:bg-[#3dadff]/10 hover:border-[#3dadff]/20 transition-all cursor-pointer"
+                                            className="px-2.5 py-1 bg-white/5 border border-white/10 rounded-xl text-[10px] md:text-xs font-bold text-slate-400 hover:text-[#3dadff] transition-all cursor-pointer"
                                         >
                                             #{tag}
                                         </span>
                                     ))
                                 ) : (
-                                    <p className="text-[10px] text-slate-600 italic">Finding your frequencies...</p>
+                                    <p className="text-[10px] text-slate-600 italic">Finding frequencies...</p>
                                 )}
                             </div>
                         </div>
-                        <p className="text-[10px] text-slate-700 italic mt-6 uppercase tracking-wider font-bold">Resonating with {commonGrounds.length * 10 || 'uncounted'} souls</p>
+                        <p className="text-[9px] text-slate-700 italic mt-4 md:mt-6 uppercase tracking-wider font-bold">Resonating with {commonGrounds.length * 10 || 'uncounted'} souls</p>
                     </div>
                 </div>
 
                 {/* Secondary Grid Section */}
-                <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 md:gap-8">
 
                     {/* Community Events */}
-                    <div className="xl:col-span-1 glass-card p-8 overflow-hidden relative">
-                        <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-8 flex items-center gap-2">
+                    <div className="xl:col-span-1 glass-card p-6 md:p-8 overflow-hidden relative">
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-6 md:mb-8 flex items-center gap-2">
                             <Clock className="w-3.5 h-3.5" />
-                            Community Events
+                            Events
                         </h3>
-                        <div className="space-y-6">
+                        <div className="space-y-4 md:space-y-6">
                             {events.slice(0, 4).length > 0 ? (
                                 events.slice(0, 4).map(event => (
                                     <div key={event._id} className="flex gap-4 group cursor-pointer" onClick={() => navigate('/communities')}>
-                                        <div className="w-12 h-12 shrink-0 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-[#3dadff]/30 transition-all font-outfit font-bold text-slate-500 uppercase">
+                                        <div className="w-10 h-10 md:w-12 md:h-12 shrink-0 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center font-outfit font-bold text-slate-500 uppercase text-xs md:text-sm">
                                             {event.title.charAt(0)}
                                         </div>
-                                        <div>
-                                            <h4 className="text-sm font-bold text-slate-200 group-hover:text-[#3dadff] transition-all line-clamp-1">
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="text-xs md:text-sm font-bold text-slate-200 group-hover:text-[#3dadff] transition-all truncate">
                                                 {event.title}
                                             </h4>
-                                            <p className="text-[9px] text-slate-500 uppercase tracking-widest mt-1">
-                                                {new Date(event.scheduledDate).toLocaleDateString()} @ {event.time}
+                                            <p className="text-[8px] md:text-[9px] text-slate-500 uppercase tracking-widest mt-0.5">
+                                                {new Date(event.scheduledDate).toLocaleDateString()}
                                             </p>
                                         </div>
                                     </div>
                                 ))
                             ) : (
                                 <div className="text-center py-6">
-                                    <Ghost className="w-8 h-8 text-slate-800 mx-auto mb-2" />
-                                    <p className="text-xs text-slate-600 font-bold uppercase tracking-tighter">No joined events</p>
+                                    <Ghost className="w-6 h-6 text-slate-800 mx-auto mb-2" />
+                                    <p className="text-[10px] text-slate-600 font-bold uppercase">No events</p>
                                 </div>
                             )}
                         </div>
                     </div>
 
                     {/* Scattered Agora Journey Space */}
-                    <div className="xl:col-span-2 glass-card h-[500px] relative overflow-hidden bg-black/40">
+                    <div 
+                        className="xl:col-span-2 glass-card h-[400px] md:h-[500px] relative overflow-hidden bg-black/40"
+                        onClick={() => setSelectedThoughtId(null)}
+                    >
                         <div className="absolute top-8 left-8 z-30">
                             <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
                                 <BookOpen className="w-3.5 h-3.5" />
@@ -275,7 +278,7 @@ const Agora = () => {
 
                         <div className="absolute inset-0 bg-[#050510]/60 backdrop-blur-[2px] z-10 pointer-events-none"></div>
 
-                        <div className="relative h-full w-full z-20 overflow-y-auto custom-scrollbar p-12" ref={scrollContainerRef}>
+                        <div className="relative h-full w-full z-20 overflow-y-auto custom-scrollbar p-12">
                             <div className="relative w-full h-[800px]">
                                 {loading ? (
                                     <div className="flex items-center justify-center h-full">
@@ -291,27 +294,33 @@ const Agora = () => {
                                                 opacity: 1,
                                                 scale: 1,
                                                 left: `${thought.pos.x}%`,
-                                                top: `${thought.pos.y}%`
+                                                top: `${thought.pos.y}%`,
+                                                zIndex: selectedThoughtId === thought._id ? 100 : 20
                                             }}
                                             transition={{ duration: 0.4, ease: "easeOut" }}
-                                            className="absolute group z-20"
+                                            className="absolute md:group"
                                             style={{ transform: 'translate(-50%, -50%)' }}
-                                            onDoubleClick={() => handleDoubleClick(thought)}
+                                            onDoubleClick={(e) => { e.stopPropagation(); handleDoubleClick(thought); }}
+                                            onClick={(e) => { e.stopPropagation(); setSelectedThoughtId(selectedThoughtId === thought._id ? null : thought._id); }}
                                         >
                                             <motion.div
-                                                className="thought-bubble"
-                                                initial={{ width: 24, height: 24 }}
-                                                whileHover={{ width: 'auto', height: 'auto', scale: 1.1, zIndex: 100 }}
+                                                className={`thought-bubble ${selectedThoughtId === thought._id ? 'selected' : ''}`}
+                                                animate={{ 
+                                                    width: selectedThoughtId === thought._id ? 'auto' : 24, 
+                                                    height: selectedThoughtId === thought._id ? 'auto' : 24,
+                                                    scale: selectedThoughtId === thought._id ? 1.1 : 1
+                                                }}
+                                                whileHover={{ width: 'auto', height: 'auto', scale: 1.1 }}
                                                 transition={{ duration: 0.3, ease: "easeIn" }}
                                                 style={{
                                                     boxShadow: `0 0 25px ${thought.pos.color}88`,
                                                     border: `1px solid ${thought.pos.color}66`
                                                 }}
                                             >
-                                                {/* Internal Content (Hidden until hover) */}
-                                                <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto overflow-hidden">
+                                                {/* Internal Content */}
+                                                <div className={`transition-all duration-300 overflow-hidden ${selectedThoughtId === thought._id ? 'opacity-100' : 'opacity-0 md:group-hover:opacity-100 pointer-events-none md:group-hover:pointer-events-auto'}`}>
                                                     <div className="min-w-[180px] max-w-[260px] p-6">
-                                                        <p className="text-[14px] font-bold text-slate-100 mb-4 line-clamp-6 group-hover:line-clamp-none leading-relaxed">
+                                                        <p className="text-[14px] font-bold text-slate-100 mb-4 line-clamp-6 md:group-hover:line-clamp-none leading-relaxed">
                                                             {thought.content}
                                                         </p>
                                                         <div className="flex items-center justify-between pt-4 border-t border-white/10">
@@ -326,12 +335,12 @@ const Agora = () => {
                                                                 {thought.isAnonymous ? 'Anonymous' : `@${thought.author?.username || 'Soul'}`}
                                                             </span>
                                                         </div>
-                                                        <p className="text-[8px] text-slate-700 uppercase tracking-[0.2em] font-black mt-4 text-center">Double Click to Connect</p>
+                                                        <p className="text-[8px] text-slate-700 uppercase tracking-[0.2em] font-black mt-4 text-center">Double Tap to Connect</p>
                                                     </div>
                                                 </div>
 
                                                 {/* Dot Placeholder (Glow state) */}
-                                                <div className="absolute inset-0 flex items-center justify-center group-hover:hidden transition-all">
+                                                <div className={`absolute inset-0 flex items-center justify-center transition-all ${selectedThoughtId === thought._id ? 'hidden' : 'md:group-hover:hidden'}`}>
                                                     <div className="relative">
                                                         <div className="w-3 h-3 rounded-full z-10" style={{ backgroundColor: thought.pos.color }}></div>
                                                         <div className="absolute inset-0 w-3 h-3 rounded-full animate-ping opacity-100 scale-150" style={{ backgroundColor: thought.pos.color }}></div>
@@ -346,7 +355,7 @@ const Agora = () => {
                         </div>
 
                         {/* Post Overlay Trigger */}
-                        <div className="absolute bottom-8 right-8 z-30">
+                        <div className="absolute bottom-6 md:bottom-8 right-6 md:right-8 z-30">
                             <button
                                 onClick={() => setContent(content || ' ')}
                                 className="w-14 h-14 bg-gradient-to-r from-[#f468c0] to-[#3dadff] text-white rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(244,104,192,0.4)] hover:scale-110 active:scale-95 transition-all animate-pulse-slow"

@@ -82,7 +82,7 @@ const ChatEngine = () => {
 
     return (
         <Layout>
-            <div className="flex glass-card overflow-hidden h-[calc(100vh-10rem)]">
+            <div className="flex glass-card overflow-hidden h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)]">
                 {/* Left Pane: Inbox */}
                 <div className={`w-full md:w-80 border-r border-white/[0.06] flex flex-col ${conversationId ? 'hidden md:flex' : 'flex'}`}>
                     <div className="p-6 border-b border-white/[0.06]">

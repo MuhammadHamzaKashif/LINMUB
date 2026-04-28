@@ -13,60 +13,52 @@ const WelcomeView = ({ onStartJourney, onSignInWithGoogle, onSignInWithEmail }) 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 1.05 }}
-        className="flex flex-col items-center text-center max-w-lg w-full"
+        className="flex flex-col items-center text-center max-w-lg w-full px-4"
     >
-        <p className="text-slate-500 uppercase tracking-[0.3em] font-medium text-[10px] mb-8">Recently Arrived!</p>
+        <p className="text-slate-500 uppercase tracking-[0.3em] font-medium text-[9px] md:text-[10px] mb-6 md:mb-8">Recently Arrived!</p>
 
-        <h1 className="text-7xl font-outfit font-extrabold text-white mb-2 tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+        <h1 className="text-5xl md:text-7xl font-outfit font-extrabold text-white mb-2 tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
             LINMUB
         </h1>
 
-        <div className="relative my-12 group">
-            <div className="absolute inset-0 bg-primary-500/20 rounded-full blur-[60px] animate-pulse"></div>
+        <div className="relative my-8 md:my-12 group">
+            <div className="absolute inset-0 bg-primary-500/20 rounded-full blur-[40px] md:blur-[60px] animate-pulse"></div>
             <img
                 src="/gen_mascot_welcome.png"
                 alt="Mascot"
-                className="w-64 h-64 object-contain relative z-10 animate-float"
+                className="w-48 h-48 md:w-64 md:h-64 object-contain relative z-10 animate-float"
             />
         </div>
 
-        <div className="space-y-4 mb-12">
-            <p className="text-xl font-bold text-slate-200">
+        <div className="space-y-3 md:space-y-4 mb-10 md:mb-12">
+            <p className="text-lg md:text-xl font-bold text-slate-200 px-4">
                 LINMUB: <span className="text-slate-400">Your private, quiet corner of connection.</span>
             </p>
-            <p className="text-slate-500 text-sm italic">
+            <p className="text-slate-500 text-xs md:text-sm italic">
                 Finding your people should feel like coming home.
             </p>
         </div>
 
-        <div className="flex flex-col gap-3 w-full max-w-xs transition-all">
+        <div className="flex flex-col gap-3 w-full max-w-[280px] md:max-w-xs transition-all">
             <button
                 onClick={onStartJourney}
-                className="btn-primary py-4 rounded-2xl flex items-center justify-center gap-3 group overflow-hidden relative"
+                className="btn-primary py-3.5 md:py-4 rounded-2xl flex items-center justify-center gap-3 group overflow-hidden relative"
             >
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                 <Apple className="w-5 h-5 fill-current" />
-                <span className="relative z-10">BEGIN JOURNEY</span>
+                <span className="relative z-10 text-sm md:text-base">BEGIN JOURNEY</span>
             </button>
-
-            {/* <button 
-                onClick={onSignInWithGoogle}
-                className="w-full h-14 rounded-2xl bg-[#2b59ca] text-white flex items-center justify-center gap-3 hover:bg-[#3466e8] transition-all font-bold shadow-lg"
-            >
-                <img src="https://www.google.com/favicon.ico" className="w-4 h-4 brightness-0 invert" alt="G" />
-                <span>SIGN IN WITH GOOGLE</span>
-            </button> */}
 
             <button
                 onClick={onSignInWithEmail}
-                className="w-full h-14 rounded-2xl bg-primary-600/20 text-primary-400 border border-primary-500/30 flex items-center justify-center gap-3 hover:bg-primary-600/30 transition-all font-bold"
+                className="w-full h-12 md:h-14 rounded-2xl bg-primary-600/20 text-primary-400 border border-primary-500/30 flex items-center justify-center gap-3 hover:bg-primary-600/30 transition-all font-bold text-sm md:text-base"
             >
                 <Mail className="w-5 h-5" />
                 <span>SIGN IN</span>
             </button>
         </div>
 
-        <p className="text-[11px] text-slate-600 italic mt-12 tracking-wide font-medium">
+        <p className="text-[10px] md:text-[11px] text-slate-600 italic mt-10 md:mt-12 tracking-wide font-medium">
             Connections that feel right.<br />
             Private, thoughtful, and cozy.
         </p>

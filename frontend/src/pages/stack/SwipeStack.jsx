@@ -168,30 +168,30 @@ const SwipeStack = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 1.1 }}
-            className="flex flex-col lg:flex-row items-center gap-16 w-full max-w-5xl mx-auto"
+            className="flex flex-col lg:flex-row items-center gap-10 md:gap-16 w-full max-w-5xl mx-auto"
         >
             {/* Left Column - Intro Card style */}
-            <div className="flex-1 space-y-12">
-                <div className="space-y-6">
-                    <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-slate-500">Curated Journey</h3>
-                    <h1 className="text-5xl md:text-6xl font-outfit font-extrabold text-white leading-tight tracking-tight">
+            <div className="flex-1 space-y-8 md:space-y-12">
+                <div className="space-y-4 md:space-y-6 text-center md:text-left">
+                    <h3 className="text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] text-slate-500">Curated Journey</h3>
+                    <h1 className="text-4xl md:text-6xl font-outfit font-extrabold text-white leading-tight tracking-tight">
                         QUIET<br /><span className="gradient-text">CONVERSATIONS</span>
                     </h1>
                 </div>
 
-                <div className="glass-card p-10 relative overflow-hidden group border-primary-500/20 max-w-md">
+                <div className="glass-card p-8 md:p-10 relative overflow-hidden group border-primary-500/20 max-w-md mx-auto md:mx-0">
                     <div className="absolute inset-0 bg-primary-600/[0.03] pointer-events-none"></div>
-                    <div className="flex flex-col items-center gap-8 relative z-10 text-center">
-                        <div className="w-24 h-24 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center shadow-[0_0_30px_rgba(99,102,241,0.1)]">
-                            <Coffee className="w-12 h-12 text-primary-400 animate-float" />
+                    <div className="flex flex-col items-center gap-6 md:gap-8 relative z-10 text-center">
+                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center shadow-[0_0_30px_rgba(99,102,241,0.1)]">
+                            <Coffee className="w-10 h-10 md:w-12 md:h-12 text-primary-400 animate-float" />
                         </div>
-                        <div className="space-y-4">
-                            <h4 className="text-xl font-bold text-white">Thoughtful pairing, hidden profile.</h4>
-                            <p className="text-slate-500 text-sm leading-relaxed font-medium capitalize">Connect deeply, at your own pace. Discover frequencies that match your own.</p>
+                        <div className="space-y-3 md:space-y-4">
+                            <h4 className="text-lg md:text-xl font-bold text-white">Thoughtful pairing, hidden profile.</h4>
+                            <p className="text-slate-500 text-xs md:text-sm leading-relaxed font-medium">Connect deeply, at your own pace. Discover frequencies that match your own.</p>
                         </div>
                         <button
                             onClick={() => setView('stack')}
-                            className="btn-primary w-full py-4 mt-4 flex items-center justify-center gap-3"
+                            className="btn-primary w-full py-3 md:py-4 mt-2 flex items-center justify-center gap-3"
                         >
                             <span>START JOURNEY</span>
                             <ChevronRight className="w-5 h-5" />
@@ -201,11 +201,11 @@ const SwipeStack = () => {
             </div>
 
             {/* Right Column - Preview Image style */}
-            <div className="flex-1 hidden lg:block relative">
+            <div className="flex-1 hidden md:block relative">
                 <div className="absolute inset-0 bg-primary-500/10 rounded-full blur-[120px] -z-10"></div>
                 <img
                     src="/gen_mascot_welcome.png"
-                    className="w-full h-auto max-w-md object-contain animate-float drop-shadow-[0_0_40px_rgba(99,102,241,0.2)]"
+                    className="w-full h-auto max-w-sm lg:max-w-md mx-auto object-contain animate-float drop-shadow-[0_0_40px_rgba(99,102,241,0.2)]"
                     alt="Journey"
                 />
             </div>
@@ -216,20 +216,20 @@ const SwipeStack = () => {
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center text-center max-w-sm mx-auto"
+            className="flex flex-col items-center text-center max-w-sm mx-auto px-4"
         >
-            <div className="w-24 h-24 rounded-full bg-primary-500/10 border border-primary-500/20 flex items-center justify-center mb-8 shadow-[0_0_40px_rgba(99,102,241,0.15)]">
-                <Sparkles className="w-10 h-10 text-primary-400 animate-pulse" />
+            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-primary-500/10 border border-primary-500/20 flex items-center justify-center mb-6 md:mb-8 shadow-[0_0_40px_rgba(99,102,241,0.15)]">
+                <Sparkles className="w-8 h-8 md:w-10 md:h-10 text-primary-400 animate-pulse" />
             </div>
 
-            <h3 className="text-2xl font-outfit font-bold text-white mb-4">A Silent Frequency</h3>
-            <p className="text-slate-500 text-sm leading-relaxed mb-10 font-medium italic">
+            <h3 className="text-xl md:text-2xl font-outfit font-bold text-white mb-3 md:mb-4">A Silent Frequency</h3>
+            <p className="text-slate-500 text-xs md:text-sm leading-relaxed mb-8 md:mb-10 font-medium italic">
                 Your quiet corner needs a few more details before the resonance can find you. Tell us about your world to start discovering others.
             </p>
 
             <button
                 onClick={() => navigate('/profile')}
-                className="btn-primary w-full py-4 flex items-center justify-center gap-3 group"
+                className="btn-primary w-full py-3 md:py-4 flex items-center justify-center gap-3 group"
             >
                 <span>SEED YOUR FREQUENCY</span>
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -239,7 +239,7 @@ const SwipeStack = () => {
 
     return (
         <Layout>
-            <div className="min-h-[calc(100vh-14rem)] flex flex-col items-center justify-center py-10">
+            <div className="min-h-[calc(100vh-14rem)] flex flex-col items-center justify-center py-6 md:py-10">
                 <AnimatePresence mode="wait">
                     {errorStatus === 400 ? (
                         <MissingInterestsView key="missing" />
@@ -250,14 +250,14 @@ const SwipeStack = () => {
                             key="stack"
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="w-full max-w-sm"
+                            className="w-full max-w-sm px-4"
                         >
-                            <div className="text-center mb-12">
-                                <h2 className="text-xs font-bold uppercase tracking-[0.5em] text-slate-600 mb-2">Finding Your Frequency</h2>
+                            <div className="text-center mb-8 md:mb-12">
+                                <h2 className="text-[10px] md:text-xs font-bold uppercase tracking-[0.5em] text-slate-600 mb-2">Finding Your Frequency</h2>
                                 <div className="h-1 w-12 bg-primary-600 mx-auto rounded-full"></div>
                             </div>
 
-                            <div className="relative w-full aspect-[3/6] select-none">
+                            <div className="relative w-full aspect-[4/6] md:aspect-[3/6] select-none">
                                 <AnimatePresence>
                                     {loading ? (
                                         <StackSkeleton />
