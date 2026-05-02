@@ -1,6 +1,8 @@
 # LINMUB
 
-LINMUB is a social discovery platform designed for introverts and people who prefer quieter, interest-driven connections. It combines anonymous thought sharing, AI-powered interest matching, and pseudonymous community participation into a cohesive experience.
+LINMUB is a social networking platform designed for introverts, loners, and socially anxious individuals who want to build meaningful connections without the pressure of traditional social media. The platform provides multiple pathways to friendship—from anonymous thought sharing to AI-matched connections and community-based interactions.
+It solves the problems of modern social media platforms that are catered toward social and extroverted people by offering anonymity, interest-based matching and providing a safe space for people that have trouble socializing.
+
 
 ## What it does
 
