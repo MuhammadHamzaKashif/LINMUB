@@ -28,7 +28,7 @@ export const updateProfile = async (req, res) => {
       updateData.interests = interests;
       
       // Regenerate embedding for AI matching
-      const interestString = `I am interested in ${interests.join(", ")}.`;
+      const interestString = `${interests.join(", ")}`;
       try {
         const vector = await generateEmbedding(interestString);
         updateData.interestEmbedding = vector;
