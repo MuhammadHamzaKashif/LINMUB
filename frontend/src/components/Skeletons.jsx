@@ -1,5 +1,6 @@
 import React from 'react';
 
+// place holders/skeletons shown while the main data is still fetching
 export const ThoughtSkeleton = () => (
   <div className="glass-card p-6 animate-pulse">
     <div className="flex items-center gap-3 mb-4">

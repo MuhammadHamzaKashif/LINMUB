@@ -1,3 +1,4 @@
+// app shell defines the sidebar, header, and account actions
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { 
@@ -26,14 +27,14 @@ const Layout = ({ children }) => {
     { icon: MessageSquare, label: 'Messages', path: '/chat' },
     { icon: Users, label: 'Communities', path: '/communities' },
     { icon: Layers, label: 'Instant Match', path: '/stack' },
-    { icon: Compass, label: 'Curated Journeys', path: '/home' }, // Using Home as Agora/Curated Journey
+    { icon: Compass, label: 'Curated Journeys', path: '/home' }, 
     { icon: Settings, label: 'Account Settings', path: '/profile' },
   ];
  
   return (
     <div className="flex h-screen bg-[#050510] text-slate-100 overflow-hidden noise-overlay font-sans">
         
-      {/* Sidebar - Reference Panel 2 */}
+      {}
       <aside className="hidden md:flex md:w-64 flex-col border-r border-white/[0.06] bg-[#050510] relative z-20 shrink-0">
         <div className="p-6 mb-8 flex justify-center md:justify-start items-center gap-3">
             <NavLink to="/home" className="flex items-center gap-3 group">
@@ -103,10 +104,10 @@ const Layout = ({ children }) => {
         </div>
       </aside>
  
-      {/* Main Content Area */}
+      
       <main className="flex-1 flex flex-col min-w-0 relative h-full">
         
-        {/* Top Header - Responsive */}
+        
         <header className="h-16 md:h-20 flex items-center justify-between px-4 md:px-8 bg-[#050510] border-b border-white/[0.06] shrink-0 relative z-10">
             <div className="flex-1 max-w-xs md:max-w-xl relative group">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600 group-focus-within:text-primary-500 transition-colors" />
@@ -146,7 +147,7 @@ const Layout = ({ children }) => {
           </div>
         </div>
  
-        {/* Mobile Nav - Hidden on desktop, simplified for mobile */}
+        
         <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#050510]/80 backdrop-blur-xl border-t border-white/10 flex items-center justify-around px-4 z-50">
             {navItems.slice(0, 4).map((item) => (
                 <NavLink

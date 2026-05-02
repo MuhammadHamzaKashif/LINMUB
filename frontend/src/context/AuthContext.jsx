@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import api from '../api/axios';
 
+// auth context stores session state and gives helpers for login and resistration
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -8,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // checks stored token and syncs user state on app startup
     const checkAuth = async () => {
       const token = localStorage.getItem('token');
       if (token) {
@@ -25,6 +27,7 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
+  // login sends credentials, saves token, and updates shared auth state
   const login = async (username, password) => {
     const response = await api.post('/auth/login', { username, password });
     const { token, user: userData } = response.data;

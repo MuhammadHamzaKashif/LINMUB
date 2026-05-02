@@ -4,9 +4,10 @@ import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-hot-toast';
 import { LogIn, UserPlus, Loader2, Apple, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+// landing page contains the initial auth prompts and welcome flow
 
-// Stable sub-components defined outside the main render function
-// to prevent unmounting/remounting on parent state changes.
+
+
 
 const WelcomeView = ({ onStartJourney, onSignInWithGoogle, onSignInWithEmail }) => (
     <motion.div
@@ -151,7 +152,7 @@ const AuthView = ({ isLogin, isLoading, formData, setFormData, onSubmit, onToggl
 );
 
 const Landing = () => {
-    const [view, setView] = useState('welcome'); // 'welcome' or 'auth'
+    const [view, setView] = useState('welcome'); 
     const [isLogin, setIsLogin] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const { login, register } = useAuth();
@@ -185,11 +186,11 @@ const Landing = () => {
 
     return (
         <div className="min-h-screen bg-[#050510] flex flex-col items-center justify-center p-4 relative overflow-hidden noise-overlay">
-            {/* Background elements */}
+            {}
             <div className="absolute inset-0 pointer-events-none">
                 <div className="absolute top-1/3 -left-20 w-[500px] h-[500px] bg-primary-600/[0.08] rounded-full blur-[150px]"></div>
                 <div className="absolute bottom-1/4 -right-20 w-[400px] h-[400px] bg-purple-600/[0.06] rounded-full blur-[120px]"></div>
-                {/* Random tiny stars */}
+                {}
                 {[...Array(40)].map((_, i) => (
                     <div
                         key={i}

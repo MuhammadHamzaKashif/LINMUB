@@ -3,6 +3,8 @@ import api from '../../api/axios';
 import Layout from '../../components/Layout';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-hot-toast';
+
+// community page manages groups, mentions, and shared events
 import {
     Users,
     Calendar,
@@ -33,19 +35,19 @@ const Communities = () => {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showSuggestModal, setShowSuggestModal] = useState(false);
 
-    // Chat State
+    
     const [groupConversation, setGroupConversation] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [chatLoading, setChatLoading] = useState(false);
     const chatEndRef = useRef(null);
 
-    // Admin State & Member List
+    
     const [pendingEvents, setPendingEvents] = useState([]);
     const [communityMembers, setCommunityMembers] = useState([]);
     const [adminLoading, setAdminLoading] = useState(false);
  
-    // Mentions State
+    
     const [mentionSearch, setMentionSearch] = useState('');
     const [showMentions, setShowMentions] = useState(false);
     const [mentionIndex, setMentionIndex] = useState(0);
@@ -406,7 +408,7 @@ const Communities = () => {
                             exit={{ opacity: 0, x: -20 }}
                             className="space-y-6"
                         >
-                            {/* Community Header */}
+                            
                             <div className="glass-card p-8 overflow-hidden relative">
                                 <div className="absolute inset-0 bg-gradient-to-r from-primary-600/10 via-transparent to-purple-600/5 pointer-events-none"></div>
                                 <div className="absolute top-0 right-0 w-48 h-48 bg-primary-500/[0.08] rounded-full -mr-20 -mt-20 blur-3xl pointer-events-none"></div>
@@ -449,7 +451,7 @@ const Communities = () => {
                                 </div>
                             </div>
 
-                            {/* Tabs */}
+                            
                             <div className="flex items-center gap-1 border-b border-white/[0.06]">
                                 <button
                                     onClick={() => handleTabChange('overview')}
@@ -475,7 +477,7 @@ const Communities = () => {
                                 )}
                             </div>
 
-                            {/* Tab Content */}
+                            
                             <div className="min-h-[400px]">
                                 {activeTab === 'overview' && (
                                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8 py-2">
@@ -566,7 +568,7 @@ const Communities = () => {
                                                 </div>
                                                 
                                                 <div className="p-4 border-t border-white/[0.06] bg-white/[0.02] relative">
-                                                    {/* Mentions Overlay */}
+                                                    
                                                     <AnimatePresence>
                                                         {showMentions && (
                                                             <motion.div 
@@ -702,7 +704,7 @@ const Communities = () => {
                     )}
                 </AnimatePresence>
 
-                {/* Create Community Modal */}
+                
                 <AnimatePresence>
                     {showCreateModal && (
                         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
@@ -753,7 +755,7 @@ const Communities = () => {
                     )}
                 </AnimatePresence>
 
-                {/* Suggest Event Modal */}
+                
                 <AnimatePresence>
                     {showSuggestModal && (
                         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
@@ -790,7 +792,7 @@ const Communities = () => {
                     )}
                 </AnimatePresence>
 
-                {/* Join Modal */}
+                
                 <AnimatePresence>
                     {showJoinModal && (
                         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">

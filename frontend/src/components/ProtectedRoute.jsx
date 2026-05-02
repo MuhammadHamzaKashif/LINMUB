@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
+// protects route until auth state is resolved
 const ProtectedRoute = () => {
   const { user, loading } = useAuth();
 

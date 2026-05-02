@@ -1,7 +1,7 @@
 import React from 'react';
 import { Moon } from 'lucide-react';
 
-// Theme toggle is now cosmetic-only since the app forces dark mode
+// toggle to dark mode or back
 const ThemeToggle = () => {
   return (
     <div className="flex items-center gap-2 text-slate-500">

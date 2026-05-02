@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import {useNavigate} from 'react-router-dom';
 
+// auth page handles login and redirects to the secure area
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000/api"; 
 
 function Auth() {
@@ -18,8 +19,9 @@ function Auth() {
       });
 
       if (res.status === 200) {
+        // saves auth token and enter app
         localStorage.setItem("token", res.data.token);
-        navigate('/home'); // Redirect to home page after successful login
+        navigate('/home'); 
       }
 
     } catch (err) {

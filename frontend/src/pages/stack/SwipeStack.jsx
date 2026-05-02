@@ -7,6 +7,8 @@ import { toast } from 'react-hot-toast';
 import { X, Sparkles, User, Shield, Zap, Coffee, ChevronRight, Apple, Ghost } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+// swipe stack handles browse and connection actions for discovery
+
 const SwipeCard = ({ user, onSwipe, isTop }) => {
     const x = useMotionValue(0);
     const rotate = useTransform(x, [-200, 200], [-25, 25]);
@@ -16,11 +18,12 @@ const SwipeCard = ({ user, onSwipe, isTop }) => {
     const passScale = useTransform(x, [0, 150], [1, 1.25]);
 
     const handleDragEnd = (event, info) => {
-        if (info.offset.x > 120) {
-            onSwipe('passed'); // Swipe Right to Pass
-        } else if (info.offset.x < -120) {
-            onSwipe('initiated_chat'); // Swipe Left to Resonate
-        }
+        if (info.offset.x > 120) 
+            onSwipe('passed'); 
+        
+        else if (info.offset.x < -120) 
+            onSwipe('initiated_chat'); 
+        
     };
 
     return (
@@ -37,7 +40,7 @@ const SwipeCard = ({ user, onSwipe, isTop }) => {
             <div className="h-full flex flex-col p-10 relative z-10">
                 <div className="flex-1 flex flex-col items-center justify-center text-center space-y-12">
 
-                    {/* Avatar Area - Reference Panel 3 */}
+                    
                     <div className="relative group">
                         <div className="absolute inset-0 bg-primary-500/20 rounded-full blur-2xl group-hover:blur-3xl transition-all"></div>
                         <div className="w-40 h-40 rounded-full bg-[#0a0a1a] border-2 border-primary-500/40 flex items-center justify-center relative overflow-hidden group-hover:border-primary-500 transition-colors">
@@ -45,7 +48,7 @@ const SwipeCard = ({ user, onSwipe, isTop }) => {
                                 <User className="w-20 h-20 text-primary-500/20 group-hover:text-primary-500/40 transition-all" />
                             </div>
                         </div>
-                        {/* Match Percentage Glow */}
+                        
                         <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-[#050510] border border-primary-500/50 px-5 py-1.5 rounded-full shadow-[0_0_20px_rgba(99,102,241,0.3)]">
                             <span className="text-xs font-black text-white flex items-center gap-2 tracking-widest uppercase">
                                 <Zap className="w-3.5 h-3.5 text-primary-400 fill-current" />
@@ -68,7 +71,7 @@ const SwipeCard = ({ user, onSwipe, isTop }) => {
                         "{user.bio || 'Silence is a friend who never betrays...'}"
                     </p>
 
-                    {/* Interests - Reference Icons style */}
+                    
                     <div className="flex flex-wrap justify-center gap-3 max-w-sm pt-4">
                         {(user.interests || ['Deep Talk', 'Reading', 'Stargazing']).slice(0, 4).map((interest, i) => (
                             <div key={i} className="flex items-center gap-2 px-4 py-2 bg-white/[0.03] border border-white/[0.06] rounded-xl text-[11px] font-bold text-slate-300 hover:bg-white/[0.06] transition-colors">
@@ -79,9 +82,9 @@ const SwipeCard = ({ user, onSwipe, isTop }) => {
                     </div>
                 </div>
 
-                {/* Card Actions - Bottom Navigation Style */}
+                
                 <div className="pt-10 border-t border-white/[0.06] flex items-center justify-between">
-                    {/* Resonate (Left) */}
+                    
                     <motion.div 
                         style={{ scale: resonateScale }}
                         className="flex flex-col items-center gap-2 text-primary-500 hover:text-primary-400 transition-all cursor-pointer"
@@ -97,7 +100,7 @@ const SwipeCard = ({ user, onSwipe, isTop }) => {
                         <span className="text-[10px] text-slate-700 font-black uppercase tracking-[0.3em]">Discovering</span>
                     </div>
 
-                    {/* Pass (Right) */}
+                    
                     <motion.div 
                         style={{ scale: passScale }}
                         className="flex flex-col items-center gap-2 text-slate-600 hover:text-white transition-all cursor-pointer"
@@ -116,7 +119,7 @@ const SwipeCard = ({ user, onSwipe, isTop }) => {
 const SwipeStack = () => {
     const [stack, setStack] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [view, setView] = useState('intro'); // 'intro' or 'stack'
+    const [view, setView] = useState('intro'); 
     const [errorStatus, setErrorStatus] = useState(null);
     const navigate = useNavigate();
 
@@ -170,7 +173,7 @@ const SwipeStack = () => {
             exit={{ opacity: 0, scale: 1.1 }}
             className="flex flex-col lg:flex-row items-center gap-10 md:gap-16 w-full max-w-5xl mx-auto"
         >
-            {/* Left Column - Intro Card style */}
+            
             <div className="flex-1 space-y-8 md:space-y-12">
                 <div className="space-y-4 md:space-y-6 text-center md:text-left">
                     <h3 className="text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] text-slate-500">Curated Journey</h3>
@@ -200,7 +203,7 @@ const SwipeStack = () => {
                 </div>
             </div>
 
-            {/* Right Column - Preview Image style */}
+            
             <div className="flex-1 hidden md:block relative">
                 <div className="absolute inset-0 bg-primary-500/10 rounded-full blur-[120px] -z-10"></div>
                 <img

@@ -8,6 +8,8 @@ import { toast } from 'react-hot-toast';
 import { Send, ChevronLeft, Loader2, Inbox, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// chat view keeps the conversation list and message thread in sync
+
 const ChatEngine = () => {
     const { conversationId } = useParams();
     const navigate = useNavigate();
@@ -61,6 +63,7 @@ const ChatEngine = () => {
 
     useEffect(scrollToBottom, [messages]);
 
+    // send message payload to backend and append the new chat item locally
     const handleSendMessage = async (e) => {
         e.preventDefault();
         if (!content.trim() || !conversationId) return;
@@ -83,7 +86,7 @@ const ChatEngine = () => {
     return (
         <Layout>
             <div className="flex glass-card overflow-hidden h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)]">
-                {/* Left Pane: Inbox */}
+                
                 <div className={`w-full md:w-80 border-r border-white/[0.06] flex flex-col ${conversationId ? 'hidden md:flex' : 'flex'}`}>
                     <div className="p-6 border-b border-white/[0.06]">
                         <h2 className="text-xl font-outfit font-bold flex items-center gap-2 text-white">
@@ -132,7 +135,7 @@ const ChatEngine = () => {
                     </div>
                 </div>
 
-                {/* Right Pane: Chat Window */}
+                
                 <div className={`flex-1 flex flex-col overflow-hidden ${!conversationId ? 'hidden md:flex items-center justify-center' : 'flex'}`}>
                     {!conversationId ? (
                         <div className="text-center p-8">
@@ -144,7 +147,7 @@ const ChatEngine = () => {
                         </div>
                     ) : (
                         <>
-                            {/* Header */}
+                            
                             <div className="p-4 border-b border-white/[0.06] flex items-center gap-3 bg-white/[0.02]">
                                 <button
                                     onClick={() => navigate('/chat')}
@@ -166,7 +169,7 @@ const ChatEngine = () => {
                                 </div>
                             </div>
 
-                            {/* Messages */}
+                            
                             <div className="flex-1 overflow-y-auto p-6 space-y-4">
                                 {loading ? (
                                     <ChatSkeleton />
@@ -200,7 +203,7 @@ const ChatEngine = () => {
                                 <div ref={messagesEndRef} />
                             </div>
 
-                            {/* Input */}
+                            
                             <div className="p-4 border-t border-white/[0.06] bg-white/[0.02]">
                                 <form onSubmit={handleSendMessage} className="relative flex items-center gap-2">
                                     <input

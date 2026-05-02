@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
+
+// profile page updates user details and interest preferences
 import Layout from '../../components/Layout';
 import { toast } from 'react-hot-toast';
 import { 
@@ -33,6 +35,7 @@ const Profile = () => {
     interests: user?.interests || []
   });
 
+  // keeps the edit form synced with the current user record from auth context
   useEffect(() => {
     if (user) {
       setFormData({
@@ -46,6 +49,7 @@ const Profile = () => {
     }
   }, [user]);
 
+  // add a new interest only when it is unique and within the allowed limit
   const handleAddInterest = (e) => {
     e.preventDefault();
     const val = interestInput.trim();
@@ -96,7 +100,7 @@ const Profile = () => {
         </header>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Account Details Section */}
+          {}
           <motion.section 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -183,7 +187,7 @@ const Profile = () => {
             </div>
           </motion.section>
 
-          {/* Interests Section */}
+          
           <motion.section 
              initial={{ opacity: 0, y: 10 }}
              animate={{ opacity: 1, y: 0 }}

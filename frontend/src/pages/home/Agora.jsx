@@ -5,6 +5,8 @@ import { ThoughtSkeleton } from '../../components/Skeletons';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+
+// Agora page fetches thoughts, events and common grounds from backend
 import {
     Send,
     MoreHorizontal,
@@ -33,7 +35,7 @@ const Agora = () => {
     const fetchData = async () => {
         setLoading(true);
 
-        // 1. Fetch Thoughts (Independent)
+        
         try {
             const thoughtsRes = await api.get('/thoughts?limit=30');
             let thoughtsData = thoughtsRes.data.thoughts || [];
@@ -66,7 +68,7 @@ const Agora = () => {
             setThoughts(scatteredThoughts);
         } catch (error) {
             console.error('Failed to load thoughts', error);
-            // Fallback seed on hard failure
+            
             setThoughts([{
                 _id: 'err-seed',
                 content: 'The stars are dim, but the resonance remains. Welcome back.',
@@ -75,13 +77,13 @@ const Agora = () => {
             }]);
         }
 
-        // 2. Fetch Events (Independent)
+        
         try {
             const eventsRes = await api.get('/communities/joined-events');
             setEvents(eventsRes.data || []);
         } catch (err) { console.error('Failed to load events', err); }
 
-        // 3. Fetch Common Grounds (Independent)
+        
         try {
             const commonRes = await api.get('/interactions/common-grounds');
             setCommonGrounds(commonRes.data || []);
@@ -166,7 +168,7 @@ const Agora = () => {
         <Layout>
             <div className="space-y-10">
 
-                {/* Header Panel */}
+                
                 <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.98 }}
@@ -203,7 +205,7 @@ const Agora = () => {
                         </div>
                     </motion.div>
 
-                    {/* Common Grounds Widget */}
+                    
                     <div className="w-full lg:w-80 glass-card p-6 md:p-8 flex flex-col justify-between">
                         <div>
                             <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4 md:mb-6 flex items-center gap-2">
@@ -229,10 +231,10 @@ const Agora = () => {
                     </div>
                 </div>
 
-                {/* Secondary Grid Section */}
+                
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 md:gap-8">
 
-                    {/* Community Events */}
+                    
                     <div className="xl:col-span-1 glass-card p-6 md:p-8 overflow-hidden relative">
                         <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-6 md:mb-8 flex items-center gap-2">
                             <Clock className="w-3.5 h-3.5" />
@@ -264,7 +266,7 @@ const Agora = () => {
                         </div>
                     </div>
 
-                    {/* Scattered Agora Journey Space */}
+                    
                     <div 
                         className="xl:col-span-2 glass-card h-[400px] md:h-[500px] relative overflow-hidden bg-black/40"
                         onClick={() => setSelectedThoughtId(null)}
@@ -317,7 +319,7 @@ const Agora = () => {
                                                     border: `1px solid ${thought.pos.color}66`
                                                 }}
                                             >
-                                                {/* Internal Content */}
+                                                
                                                 <div className={`transition-all duration-300 overflow-hidden ${selectedThoughtId === thought._id ? 'opacity-100' : 'opacity-0 md:group-hover:opacity-100 pointer-events-none md:group-hover:pointer-events-auto'}`}>
                                                     <div className="min-w-[180px] max-w-[260px] p-6">
                                                         <p className="text-[14px] font-bold text-slate-100 mb-4 line-clamp-6 md:group-hover:line-clamp-none leading-relaxed">
@@ -339,7 +341,7 @@ const Agora = () => {
                                                     </div>
                                                 </div>
 
-                                                {/* Dot Placeholder (Glow state) */}
+                                                
                                                 <div className={`absolute inset-0 flex items-center justify-center transition-all ${selectedThoughtId === thought._id ? 'hidden' : 'md:group-hover:hidden'}`}>
                                                     <div className="relative">
                                                         <div className="w-3 h-3 rounded-full z-10" style={{ backgroundColor: thought.pos.color }}></div>
@@ -354,7 +356,7 @@ const Agora = () => {
                             </div>
                         </div>
 
-                        {/* Post Overlay Trigger */}
+                        
                         <div className="absolute bottom-6 md:bottom-8 right-6 md:right-8 z-30">
                             <button
                                 onClick={() => setContent(content || ' ')}
@@ -367,7 +369,7 @@ const Agora = () => {
                 </div>
             </div>
 
-            {/* Post Modal Overlay */}
+            
             <AnimatePresence>
                 {content !== '' && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[#050510]/90 backdrop-blur-md">
